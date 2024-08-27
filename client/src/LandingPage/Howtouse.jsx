@@ -1,6 +1,5 @@
-import { Step, Stepper, Typography, Card, CardContent } from "@mui/material";
+import { Step, Typography, Card, CardContent } from "@mui/material";
 import StepButton from '@mui/material/StepButton';
-import Box from '@mui/material/Box';
 import React from "react";
 import { HowtouseArea, HowtouseCard, HowtouseStepper } from "./LandingPageStyles"; // Assume custom styles
 import {motion} from 'framer-motion';

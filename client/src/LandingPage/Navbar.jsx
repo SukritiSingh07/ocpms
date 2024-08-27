@@ -1,4 +1,4 @@
-import { ButtonGroup, Divider, Typography, Link } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Buttonstyle, LinksArea, StyledLinks, StyledToolbar } from "./LandingPageStyles";
 
 function Navbar() {

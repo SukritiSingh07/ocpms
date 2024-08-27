@@ -26,7 +26,6 @@ function LandingPage(){
                     transition={{
                         duration: 4,      
                         repeat: Infinity, 
-                        // repeatDelay: 1,    
                         ease: "easeInOut", 
                     }}
                 ></MotionRightImg></RightBoxIn>

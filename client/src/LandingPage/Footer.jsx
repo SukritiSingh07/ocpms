@@ -1,4 +1,3 @@
-// Fimport React from 'react';
 import {Box,Table,TableBody,TableCell,TableContainer,TableRow,Typography,Link} from '@mui/material';
 import { Facebook, Twitter, LinkedIn } from '@mui/icons-material';
 import { FooterArea, FooterBottom } from './LandingPageStyles';
@@ -11,7 +10,6 @@ function Footer() {
         <Table>
           <TableBody>
             <TableRow>
-              {/* Left side: Title, paragraph, and icons */}
               <TableCell sx={{ borderBottom: 'none', width: '50%' }}>
                 <Typography variant="h5" fontWeight="bold" color="white" gutterBottom>
                   OCPMS
@@ -26,7 +24,6 @@ function Footer() {
                 </Box>
               </TableCell>
 
-              {/* Right side: Useful links */}
               <TableCell sx={{ borderBottom: 'none', width: '20%' }} >
                 <Typography variant="h6" fontWeight="bold" color="white" mb={5} gutterBottom>
                   Company
@@ -75,7 +72,6 @@ function Footer() {
       </TableContainer>
 
     </FooterArea>
-      {/* Bottom section: CopyrigSht */}
       <FooterBottom>
         <Typography variant="body1" color="white">
           © 2024 OCPMS. All rights reserved.
