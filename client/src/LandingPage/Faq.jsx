@@ -6,8 +6,8 @@ import { FaqArea } from "./LandingPageStyles";
 const faqs = [
     {
         panel: 'panel1',
-        summary: "What is CollabFlow TNC?",
-        details: "CollabFlow is an all-in-one collaboration platform designed to streamline teamwork and communication.",
+        summary: "What is OCPMS?",
+        details: "OCPMS is an all-in-one collaboration platform designed to streamline teamwork and communication.",
     },
     {
         panel: 'panel2',
@@ -17,12 +17,12 @@ const faqs = [
     {
         panel: 'panel3',
         summary: "Is there a trial period available?",
-        details: "Yes, we offer a 14-day free trial. Experience the features & benefits of CollabFlow with no commitment.",
+        details: "Yes, we offer a 14-day free trial. Experience the features & benefits of OCPMS with no commitment.",
     },
     {
         panel: 'panel4',
-        summary: "How secure is CollabFlow?",
-        details: "CollabFlow prioritizes data security. We employ industry-standard encryption and security protocols.",
+        summary: "How secure is OCPMS?",
+        details: "OCPMS prioritizes data security. We employ industry-standard encryption and security protocols.",
     },
 ]
 

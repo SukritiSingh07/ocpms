@@ -13,7 +13,7 @@ function LandingPage(){
                 <Typography variant="h2" fontWeight="bold">Empower Your Team with Seamless Collaboration</Typography>
             </LeftBoxTop>
             <LeftBoxMid>
-                <Typography variant="h6">Experience unparalleled productivity and seamless teamwork with CollabFlow TNC - the all-in-one collaboration platform designed to simplify the way your team works and communicates.</Typography>
+                <Typography variant="h6">Experience unparalleled productivity and seamless teamwork with OCPMS - the all-in-one collaboration platform designed to simplify the way your team works and communicates.</Typography>
             </LeftBoxMid>
             <LeftBoxBot>
                 <Buttonstyle>Create Workspace</Buttonstyle>

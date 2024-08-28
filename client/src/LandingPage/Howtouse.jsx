@@ -5,7 +5,7 @@ import { HowtouseArea, HowtouseCard, HowtouseStepper } from "./LandingPageStyles
 import {motion} from 'framer-motion';
 
 const steps = [
-  { label: 'Sign Up for CollabFlow TNC', imgSrc: '/assets/LandingPage/howtouse1.webp' },
+  { label: 'Sign Up for OCPMS', imgSrc: '/assets/LandingPage/howtouse1.webp' },
   { label: 'Create Your Workspace', imgSrc: '/assets/LandingPage/howtouse2.webp' },
   { label: 'Manage Task & Assign', imgSrc: '/assets/LandingPage/howtouse3.webp' },
   { label: 'Start Collaborating', imgSrc: '/assets/LandingPage/howtouse4.webp' }
@@ -44,7 +44,7 @@ function Howtouse() {
       <Typography variant="h3" textAlign="center" fontWeight="bold" gutterBottom>
         How to Use
       </Typography>
-      <Typography variant="h6" textAlign="center">CollabFlow TNC is not just a tool;</Typography>
+      <Typography variant="h6" textAlign="center">OCPMS is not just a tool;</Typography>
       <Typography variant="h6" textAlign="center">It's a catalyst for transforming the way your team collaborates.</Typography>
 
       <HowtouseStepper nonLinear activeStep={activeStep} alternativeLabel sx={{ mb: 3, width: '100%' }}>
