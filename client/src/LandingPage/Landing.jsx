@@ -5,7 +5,7 @@ import {motion} from 'framer-motion';
 function LandingPage(){
 
     const MotionRightImg = motion(RightImg);
-
+    
     return(
         <StyledMainPage>
             <LeftBox>

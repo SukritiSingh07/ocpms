@@ -1,8 +1,8 @@
 import { Step, Typography, Card, CardContent } from "@mui/material";
 import StepButton from '@mui/material/StepButton';
-import React from "react";
+import React, { useEffect } from "react";
 import { HowtouseArea, HowtouseCard, HowtouseStepper } from "./LandingPageStyles"; // Assume custom styles
-import {motion} from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const steps = [
   { label: 'Sign Up for OCPMS', imgSrc: '/assets/LandingPage/howtouse1.webp' },
@@ -36,9 +36,16 @@ function Howtouse() {
   const StepIcon = ({ icon }) => (
     <img src={icon} alt="Step icon" style={{ width: 50, height: 50 }} />
   );
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveStep((prevStep) => (prevStep + 1) % steps.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [steps.length]);
 
   const MotionHowtouseCard = motion(HowtouseCard);
-
+  const transition = { duration: 1 };
   return (
     <HowtouseArea>
       <Typography variant="h3" textAlign="center" fontWeight="bold" gutterBottom>
@@ -47,7 +54,7 @@ function Howtouse() {
       <Typography variant="h6" textAlign="center">OCPMS is not just a tool;</Typography>
       <Typography variant="h6" textAlign="center">It's a catalyst for transforming the way your team collaborates.</Typography>
 
-      <HowtouseStepper nonLinear activeStep={activeStep} alternativeLabel sx={{ mb: 3, width: '100%' }}>
+      <HowtouseStepper nonLinear activeStep={activeStep} alternativeLabel sx={{ mb: 3, width: '100%'}}>
         {steps.map((step, index) => (
           <Step key={step.label} sx={{ width: 'auto' }}>
             <StepButton onClick={handleStep(index)}>
@@ -59,26 +66,32 @@ function Howtouse() {
           </Step>
         ))}
       </HowtouseStepper>
-
-      <MotionHowtouseCard whileHover={{scale:1.1}}>
-        <Card 
+      <AnimatePresence mode="wait">
+      <MotionHowtouseCard mode="wait"
+        key={activeStep}
+          initial={{ opacity: 0, x: 50 }}        
+          animate={{ opacity: 1, x: 0 }}         
+          exit={{ opacity: 0, x: -50 }}          
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+      >
+        <Card
           sx={{
-            minWidth: 300, 
-            maxWidth: 800,  
-            boxShadow: 3, 
-            mt: 4, 
-            p: 2, 
-            backgroundColor: '#f5f5f5', 
-            display: 'flex', 
+            minWidth: 300,
+            maxWidth: 800,
+            boxShadow: 3,
+            mt: 4,
+            p: 2,
+            backgroundColor: '#f5f5f5',
+            display: 'flex',
             alignItems: 'center',
-            gap: 2, 
+            gap: 2,
             borderRadius: '50px'
           }}
         >
-          <img 
-            src={steps[activeStep].imgSrc} 
-            alt={steps[activeStep].label} 
-            style={{ width: 100, height: 100, borderRadius: '8px' }} 
+          <img
+            src={steps[activeStep].imgSrc}
+            alt={steps[activeStep].label}
+            style={{ width: 100, height: 100, borderRadius: '8px' }}
           />
           <CardContent>
             <Typography variant="h5" component="div" gutterBottom>
@@ -89,7 +102,8 @@ function Howtouse() {
             </Typography>
           </CardContent>
         </Card>
-      </MotionHowtouseCard>
+        </MotionHowtouseCard>
+        </AnimatePresence>
     </HowtouseArea>
   );
 }
