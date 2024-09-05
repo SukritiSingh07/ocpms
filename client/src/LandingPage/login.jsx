@@ -24,15 +24,12 @@ function Login() {
     const handleconfPassChange = (event) => {
         setconfPass(event.target.value);
     }
-    const [login, setlogin] = useState(false);
     const [signup, setsignup] = useState(true);
 
     const handlePage = () => {
-        if (login === true) {
-            setlogin(false);
+        if (signup === false) {
             setsignup(true);
         } else {
-            setlogin(true);
             setsignup(false);
         }
     }
@@ -53,7 +50,7 @@ function Login() {
                 style={{ width: "50%" }}
             />
             <div style={divstyle}>
-                <h2>{signup ? "Sign Up to" : "Sign In as"}</h2>
+                <h2 style={{fontFamily: "Open Sans"}}>{signup ? "Sign Up to" : "Sign In as"}</h2>
                 <img src="" alt="logo" />
                 <form style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", paddingTop: "1vh" }}>
                     <TextField
@@ -66,7 +63,7 @@ function Login() {
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '20px',
                                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#7400b8',
+                                    borderColor: '#b3a2bd',
                                 },
                             },
                             '& .MuiInputLabel-root': {
@@ -88,7 +85,7 @@ function Login() {
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '20px',
                                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#7400b8',
+                                    borderColor: '#b3a2bd',
                                 },
                             },
                             '& .MuiInputLabel-root': {
@@ -113,7 +110,7 @@ function Login() {
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '20px',
                                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#7400b8',
+                                    borderColor: '#b3a2bd',
                                 },
                             },
                             '& .MuiInputLabel-root': {
@@ -140,7 +137,7 @@ function Login() {
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '20px',
                                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#7400b8',
+                                    borderColor: '#b3a2bd',
                                 },
                             },
                             '& .MuiInputLabel-root': {
@@ -161,7 +158,7 @@ function Login() {
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '13px',
                                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#7400b8',
+                                    borderColor: '#b3a2bd',
                                 },
                             },
                             '& .MuiInputLabel-root': {
@@ -178,7 +175,7 @@ function Login() {
                         {signup ? "Sign Up" : "Sign In"}
                     </LoginButton>
                 </form>
-                <Link sx={{ padding: 3, cursor: "pointer", color: "#7400b8", textDecoration:"none" }} onClick={handlePage}>
+                <Link sx={{ padding: 3, cursor: "pointer", color: "#7400b8", textDecoration:"none", fontStyle:"italic" }} onClick={handlePage}>
                     {signup ? "Login Instead" : "Register Now"}
                 </Link>
             </div>
