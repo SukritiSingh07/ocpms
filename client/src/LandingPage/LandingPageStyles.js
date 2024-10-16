@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { Box, Button, Card, CardContent, Link, Stepper, Toolbar } from "@mui/material";
+import { Box, Button, Card, CardContent, IconButton, Link, Stepper, TextField, Toolbar } from "@mui/material";
+import { cyan } from "@mui/material/colors";
 
 //Navbar Styling-------------------------------------------------------------------------------------------------------------------->
 
@@ -197,23 +198,48 @@ export const LoginBox = styled(Box)(({ theme }) => (
         height: '80vh'
     }
 ))
-
-export const style = {
-    position: 'absolute',
+export const TextPlace= styled(TextField)(({ theme })=>(
+    {
+        '& .MuiOutlinedInput-root': {
+            borderRadius: '20px',
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#D8B4FE',
+            },
+        },
+        '& .MuiInputLabel-root': {
+            '&.Mui-focused': {
+                color: 'Black',
+            },
+        },
+        }
+))
+export const LogBox = styled(Box)(({ theme }) =>({
+    // position: 'relative',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '120vh',
-    height: '80vh',
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
+    position: 'relative', width: '120vh',
+    backgroundColor: 'white' ,
+    height: '80vh', 
     boxShadow: 24,
-    p: 2,
+    // padding: '3mm',
+    border: '3mm solid cyan',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-};
-
+}
+))
+export const IconBut=styled(IconButton)(({theme})=>(
+    {
+        position: 'absolute',
+        top: -20,
+        right: -20,
+        color: 'black',
+        backgroundColor: 'white',
+        borderRadius: '50%',
+        padding: '4px',
+    }
+))
 export const LoginButton = styled(Button)(({ theme }) => (
     {
         background: "#7400b8",
@@ -222,6 +248,19 @@ export const LoginButton = styled(Button)(({ theme }) => (
             backgroundColor: '#ffff',
             color: "black"
         },
-    }
-
+        
+            '& .MuiOutlinedInput-root': {
+                borderRadius: '13px',
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#b3a2bd',
+                },
+            },
+            '& .MuiInputLabel-root': {
+                '&.Mui-focused': {
+                    color: 'Black',
+                },
+            },
+            marginTop: '3mm',
+            borderRadius: '20px',
+        }
 ))

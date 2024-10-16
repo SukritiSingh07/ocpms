@@ -1,8 +1,9 @@
 import { Box, IconButton, Modal, Typography } from "@mui/material";
-import { Buttonstyle, LinksArea, StyledLinks, StyledToolbar, style } from "./LandingPageStyles";
+import { Buttonstyle, IconBut, LinksArea, LogBox, StyledLinks, StyledToolbar, style } from "./LandingPageStyles";
 import { useState } from "react";
 import Login from "./login";
 import CloseIcon from '@mui/icons-material/Close';
+import { motion } from 'framer-motion';
 
 function Navbar() {
     const [open, setOpen] = useState(false);
@@ -12,6 +13,7 @@ function Navbar() {
     const handleClose = () => {
         setOpen(false);
     };
+    const LogBoxMotion = motion(LogBox);
     return (
         <StyledToolbar >
             <Typography variant='h5' fontWeight="bolder" color="#264653">OCPMS</Typography>
@@ -33,23 +35,18 @@ function Navbar() {
                     },
                 }}
             >
-                <Box sx={{ ...style, position: 'relative' }}>
+
+                <LogBoxMotion
+                    initial={{ opacity: 0 ,top:'60%'}}
+                    animate={{ opacity: 1 ,top:'50%'}}
+                >
                     <Login />
-                    <IconButton
-                        onClick={handleClose}
-                        sx={{
-                            position: 'absolute',
-                            top: -20,
-                            right: -20,
-                            color: 'black',
-                            backgroundColor: 'white',  
-                            borderRadius: '50%',       
-                            padding: '4px',
-                        }}
+                    <IconBut
+                        onClick={handleClose}                    
                     >
                         <CloseIcon />
-                    </IconButton>
-                </Box>
+                    </IconBut>
+                </LogBoxMotion>
 
             </Modal>
         </StyledToolbar>

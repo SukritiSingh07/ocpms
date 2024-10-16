@@ -22,6 +22,8 @@ function MainLanding(){
                 <Faq />
             </div>
             <Footer />
+            
+          
         </>
     );
 }

@@ -1,8 +1,7 @@
-import { Diversity1Outlined, Padding } from "@mui/icons-material";
-import { Box, TextField, Typography, Button, Link } from "@mui/material";
+import {Link } from "@mui/material";
 import React, { useState, useEffect } from "react"
-import { Buttonstyle, LoginBox, LoginButton } from "./LandingPageStyles";
-
+import { LoginBox, LoginButton, TextPlace } from "./LandingPageStyles";
+import { motion } from "framer-motion";
 
 
 const divstyle = {
@@ -50,54 +49,29 @@ function Login() {
                 style={{ width: "50%" }}
             />
             <div style={divstyle}>
-                <h2 style={{fontFamily: "Open Sans"}}>{signup ? "Sign Up to" : "Sign In as"}</h2>
+                <h2 style={{ fontFamily: "Open Sans" }}>{signup ? "Sign Up to" : "Sign In as"}</h2>
                 <img src="" alt="logo" />
                 <form style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", paddingTop: "1vh" }}>
-                    <TextField
+                    <TextPlace
                         id="outlined-basic"
                         label="Username"
                         variant="outlined"
                         size="small"
                         margin="normal"
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                borderRadius: '20px',
-                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#b3a2bd',
-                                },
-                            },
-                            '& .MuiInputLabel-root': {
-                                '&.Mui-focused': {
-                                    color: 'Black',
-                                },
-                            },
-                            }
-                        }
-                            />
-                            { signup && (
-                                <TextField
-                                    id="outlined-basic"
-                                    label="Email"
-                                    variant="outlined"
-                                    size="small"
-                                    margin="normal"
-                                    sx={{
-                            '& .MuiOutlinedInput-root': {
-                                borderRadius: '20px',
-                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#b3a2bd',
-                                },
-                            },
-                            '& .MuiInputLabel-root': {
-                                '&.Mui-focused': {
-                                    color: 'Black',
-                                },
-                            },
-                            }
-                        }
-                                />
-                            )}
-                    <TextField
+
+                    />
+                    {signup && (
+                        <TextPlace
+                            id="outlined-basic"
+                            label="Email"
+                            variant="outlined"
+                            size="small"
+                            margin="normal"
+
+
+                        />
+                    )}
+                    <TextPlace
                         id="password"
                         label="Password"
                         variant="outlined"
@@ -106,23 +80,10 @@ function Login() {
                         value={password}
                         onChange={handlePasswordChange}
                         margin="normal"
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                borderRadius: '20px',
-                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#b3a2bd',
-                                },
-                            },
-                            '& .MuiInputLabel-root': {
-                                '&.Mui-focused': {
-                                    color: 'Black',
-                                },
-                            },
-                            }
-                        }
+
                     />
                     {signup && (
-                        <TextField
+                        <TextPlace
                             id="password"
                             label="Confirm Password"
                             variant="outlined"
@@ -133,49 +94,22 @@ function Login() {
                             error={hasError}
                             helperText={hasError ? "Passwords do not match." : ""}
                             margin="normal"
-                            sx={{
-                            '& .MuiOutlinedInput-root': {
-                                borderRadius: '20px',
-                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#b3a2bd',
-                                },
-                            },
-                            '& .MuiInputLabel-root': {
-                                '&.Mui-focused': {
-                                    color: 'Black',
-                                },
-                            },
-                            
-                            }
-                        }
+
                         />
                     )}
                     <LoginButton
                         variant="contained"
                         fullWidth
-                        margin="normal"
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                borderRadius: '13px',
-                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#b3a2bd',
-                                },
-                            },
-                            '& .MuiInputLabel-root': {
-                                '&.Mui-focused': {
-                                    color: 'Black',
-                                },
-                            },
-                            marginTop:3,
-                            borderRadius:'20px'
-                            }
-                            
-                        }
+                        margin="normal"                      
                     >
                         {signup ? "Sign Up" : "Sign In"}
                     </LoginButton>
                 </form>
-                <Link sx={{ padding: 3, cursor: "pointer", color: "#7400b8", textDecoration:"none", fontStyle:"italic" }} onClick={handlePage}>
+                <Link sx={{ padding: 3, cursor: "pointer", color: '#7400b8', textDecoration: "none", fontStyle: "italic",
+                        '&:hover':{
+                            textDecoration:'underline'
+                        }
+                     }} onClick={handlePage}>
                     {signup ? "Login Instead" : "Register Now"}
                 </Link>
             </div>
