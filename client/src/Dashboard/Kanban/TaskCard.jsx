@@ -1,13 +1,47 @@
 import React from 'react';
-import { Card, Typography } from '@mui/material';
+import { TaskCard } from './KanbanStyles';
+import { Typography, Box, Avatar, Stack } from '@mui/material';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import PersonIcon from '@mui/icons-material/Person';
+import DoneIcon from '@mui/icons-material/Done';
 
-const TaskCard = ({ task }) => {
+const TaskCardComponent = ({ task }) => {
     return (
-        <Card style={{ marginBottom: '10px', padding: '10px', backgroundColor: '#e0e0e0' }}>
-            <Typography variant="h6">{task.title}</Typography>
-            <Typography variant="body2">{task.description}</Typography>
-        </Card>
+        <TaskCard>
+            <Typography 
+                variant="h6" 
+                textAlign="center" 
+                mb={5} 
+                fontWeight="bold"
+            >
+                {task.title}
+            </Typography>
+
+            <Typography 
+                variant="body1" 
+                mb={5}
+            >
+                {task.description}
+            </Typography>
+
+            <Box mt={5} display="flex" justifyContent="space-between" alignItems="center">
+                <Stack direction="row" alignItems="center" spacing={1}>
+                    <PersonIcon color="action" />
+                    <Typography variant="body2" color="textSecondary">
+                        {task.assignedTo}
+                    </Typography>
+                </Stack>
+
+                <Stack direction="row" alignItems="center" spacing={1}>
+                    <AccessTimeIcon color="action" />
+                    <Typography variant="body2" color="textSecondary">
+                        {task.timer} mins left
+                    </Typography>
+                </Stack>
+                <DoneIcon />
+            </Box>
+        </TaskCard>
     );
 };
 
-export default TaskCard;
+export default TaskCardComponent;

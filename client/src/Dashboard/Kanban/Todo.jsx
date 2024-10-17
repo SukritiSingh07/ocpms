@@ -1,20 +1,23 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
-import TaskCard from './TaskCard';
+import { TaskListArea } from './KanbanStyles';
+import TaskCardComponent from './TaskCard';
+import { Typography } from '@mui/material';
+import CreateTask from './CreateTask';
 
 const Todo = () => {
-    const dummyTasks = [
-        { title: 'Task 1', description: 'Description of Task 1' },
-        { title: 'Task 2', description: 'Description of Task 2' },
-    ];
+    const tasks = [
+        { title: 'Task 1', description: 'Description for Task 1', assignedTo: 'Alice', timer: 120 },
+        { title: 'Task 2', description: 'Description for Task 2', assignedTo: 'Bob', timer: 90 },
+    ]; 
 
     return (
-        <Box p={2} bgcolor="#f0f0f0" borderRadius={2}>
-            <Typography variant="h6" mb={2}>To Do</Typography>
-            {dummyTasks.map((task, index) => (
-                <TaskCard key={index} task={task} />
+        <TaskListArea>
+            <Typography variant="h6" textAlign="center" mb={5}>To Do</Typography>
+            <CreateTask />
+            {tasks.map((task, index) => (
+                <TaskCardComponent key={index} task={task} />
             ))}
-        </Box>
+        </TaskListArea>
     );
 };
 

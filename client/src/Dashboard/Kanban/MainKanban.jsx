@@ -1,14 +1,13 @@
 import React from 'react';
+import { KanbanArea } from './KanbanStyles';
 import { Grid } from '@mui/material';
 import Todo from './Todo';
 import Doing from './Doing';
 import Done from './Done';
-import CreateTask from './CreateTask';
 
 const MainKanban = () => {
     return (
-        <div>
-            <CreateTask />
+        <KanbanArea>
             <Grid container spacing={2}>
                 <Grid item xs={4}>
                     <Todo />
@@ -20,7 +19,7 @@ const MainKanban = () => {
                     <Done />
                 </Grid>
             </Grid>
-        </div>
+        </KanbanArea>
     );
 };
 

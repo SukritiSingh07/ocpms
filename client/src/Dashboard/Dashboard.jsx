@@ -26,7 +26,6 @@ const Dashboard = () => {
           }}
         >
           <MiniNav />
-          <h1>Dashboard Content</h1>
           <MainKanban />
         </Box>
         {isRightSidebarOpen && <RightSidebar />}
