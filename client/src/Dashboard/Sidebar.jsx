@@ -10,10 +10,11 @@ const Sidebar = () => {
     width: 250,
     height: "calc(100vh - 64px)", 
     background: "#AD49E1",
-    position: "relative",
+    position: "fixed",
     flexShrink: 0,
   }}
 >
+    
 </Box>
 
   );

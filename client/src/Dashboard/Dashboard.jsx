@@ -15,18 +15,16 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative" }}>
-      <Navbar toggleRightSidebar={toggleRightSidebar} />
+      <Navbar />
       <Box sx={{ display: "flex", flexGrow: 1, marginTop: "64px", position:"relative" }}> 
         <Sidebar />
         
         <Box
           sx={{
-            position: "relative", 
             padding: 2,
           }}
         >
-          <MiniNav />
-          <h1>Dashboard Content</h1>
+          <MiniNav toggleRightSidebar={toggleRightSidebar} isRightSidebarOpen={isRightSidebarOpen} />
           <MainKanban />
         </Box>
         {isRightSidebarOpen && <RightSidebar />}
