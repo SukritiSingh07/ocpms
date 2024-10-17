@@ -7,6 +7,7 @@ import {
   ListItemText,
   ListItemIcon,
   Collapse,
+  Button
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -21,7 +22,7 @@ const Sidebar = () => {
   };
 
   return (
-    <Box sx={{ width: 250, background: '#AD49E1', height: '100vh', position: 'fixed' }}>
+    <Box sx={{ width: 250, background: '#3a6ea5', height: "calc(100vh - 64px)", position: 'fixed',display:"flex", flexDirection: "column", justifyContent: "space-between" }}>
       <List>
         <ListItemButton onClick={handleToggle}>
           <ListItemIcon>
@@ -56,7 +57,12 @@ const Sidebar = () => {
           </List>
         </Collapse>
       </List>
-    </Box>
+      <Box style={{display:"flex", justifyContent: "space-evenly"}}>
+      <Button style={{color: "black"}}>Join</Button>
+      <Button style={{color: "black"}}>Create</Button>
+      </Box>
+      </Box>
+
   );
 };
 

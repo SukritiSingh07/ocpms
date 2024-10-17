@@ -16,7 +16,7 @@ function MiniNav(props) {
   return (
     <Box 
       sx={{ 
-        backgroundColor: "#F8F9D7", 
+        backgroundColor: "#ebebeb", 
         borderBottom: "1px solid #ddd",
         position: "fixed",  
         padding: 0,
@@ -26,7 +26,7 @@ function MiniNav(props) {
         height: "8vh",
         display: "flex",
         justifyContent: "space-between",
-        zIndex: 1,
+        zIndex: 2,
         opacity: 1,
       }}
     >
