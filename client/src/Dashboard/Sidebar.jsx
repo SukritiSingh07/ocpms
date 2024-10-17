@@ -9,16 +9,14 @@ const Sidebar = () => {
       sx={{
         width: 250,
         height: "100vh",
-        backgroundColor: "rgb(83, 144, 217)",
+        background: "#AD49E1",
         position: "fixed",
         top: 0,
         left: 0,
         paddingTop: "64px", 
       }}
     >
-      <List>
-        
-      </List>
+  
     </Box>
   );
 };

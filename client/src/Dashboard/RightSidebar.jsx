@@ -10,7 +10,7 @@ const RightSidebar = () => {
     sx={{
       width: 250,
       height: "100vh",
-      backgroundColor: "rgb(83, 144, 217)",
+      backgroundColor: "#EBD3F8",
       position: "fixed",
       top: 0,
       right: 0,
