@@ -105,7 +105,7 @@ function Login() {
                         {signup ? "Sign Up" : "Sign In"}
                     </LoginButton>
                 </form>
-                <Link sx={{ padding: 3, cursor: "pointer", color: '#7400b8', textDecoration: "none", fontStyle: "italic",
+                <Link to="/dashboard" sx={{ padding: 3, cursor: "pointer", color: '#7400b8', textDecoration: "none", fontStyle: "italic",
                         '&:hover':{
                             textDecoration:'underline'
                         }

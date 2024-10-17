@@ -10,6 +10,7 @@ const Navbar = () => {
     <AppBar position="fixed" >
       <StyledToolbar style={{display: 'flex', justifyContent: 'space-between'}}>
         <img src="/assets/dashboardPics/8f1QUYU.png" alt="Logo" style={{ width: "5vh", height: "auto", borderRadius: "50%" }} />
+        <img src="/assets/dashboardPics/8f1QUYU.png" alt="Logo" style={{ width: "5vh", height: "auto", borderRadius: "50%" }} />
         
       </StyledToolbar>
     </AppBar>
