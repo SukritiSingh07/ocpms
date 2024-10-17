@@ -7,14 +7,13 @@ function MiniNav() {
       sx={{ 
         backgroundColor: "#F1F1F1", 
         borderBottom: "1px solid #ddd",
-        position: "absolute",  
+        position: "fixed",  
         top: "64px", 
-        // left: 250,
-        // right: 250,
-        zIndex: 1000
+        left: 250,
+        right: 250,
       }}
     >
-    hel
+    
     </Box>
   );
 }

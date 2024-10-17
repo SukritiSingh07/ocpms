@@ -6,18 +6,16 @@ const Sidebar = () => {
 
   return (
     <Box
-      sx={{
-        width: 250,
-        height: "100vh",
-        background: "#AD49E1",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        paddingTop: "64px", 
-      }}
-    >
-  
-    </Box>
+  sx={{
+    width: 250,
+    height: "calc(100vh - 64px)", 
+    background: "#AD49E1",
+    position: "relative",
+    flexShrink: 0,
+  }}
+>
+</Box>
+
   );
 };
 

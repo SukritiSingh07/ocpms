@@ -12,7 +12,7 @@ const Navbar = (props) => {
       <StyledToolbar style={{display: 'flex', justifyContent: 'space-between'}}>
         <img src="/assets/dashboardPics/8f1QUYU.png" alt="Logo" style={{ width: "5vh", height: "auto", borderRadius: "50%" }} />
         <IconButton
-          onClick={toggleRightSidebar}
+          onClick={props.toggleRightSidebar}
           sx={{
             color: "white",
             backgroundColor: isRightSidebarOpen ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.2)", 

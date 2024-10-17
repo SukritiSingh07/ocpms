@@ -1,11 +1,9 @@
-// Dashboard.jsx
 import React, { useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
 import { Box } from "@mui/material";
 import MiniNav from "./MiniNav";
-
 import MainKanban from "./Kanban/MainKanban";
 
 const Dashboard = () => {
@@ -16,26 +14,24 @@ const Dashboard = () => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Navbar toggleRightSidebar={toggleRightSidebar}/>
-      <Sidebar />
-      {isRightSidebarOpen && <RightSidebar />}
-     
-      <Box
-        sx={{
-          marginLeft: 250,  
-          marginRight: 250, 
-          marginTop: "64px",
-          padding: 2,
-          flexGrow: 1,
-        }}
-      >
-         <MiniNav  />
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative" }}>
+      <Navbar toggleRightSidebar={toggleRightSidebar} />
+      <Box sx={{ display: "flex", flexGrow: 1, marginTop: "64px", position:"relative" }}> 
+        <Sidebar />
+        
+        <Box
+          sx={{
+            flexGrow: 1,
+            position: "relative", 
+            padding: 2,
+          }}
+        >
+          <MiniNav />
+          <h1>Dashboard Content</h1>
           <MainKanban />
-        <h1>Dashboard Content</h1>
+        </Box>
+        {isRightSidebarOpen && <RightSidebar />}
       </Box>
-      <RightSidebar />
-      
     </Box>
   );
 };

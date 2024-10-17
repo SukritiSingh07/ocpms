@@ -7,20 +7,17 @@ const RightSidebar = () => {
   return (
     
     <Box
-    sx={{
-      width: 250,
-      height: "100vh",
-      backgroundColor: "#EBD3F8",
-      position: "fixed",
-      top: 0,
-      right: 0,
-      paddingTop: "64px", 
-    }}
-  >
-    <List>
-      
-    </List>
-  </Box>
+  sx={{
+    width: 250,
+    height: "calc(100vh - 64px)", 
+    backgroundColor: "#EBD3F8",
+    position: "absolute", 
+    right: 0,
+
+  }}
+>
+</Box>
+
     
   );
 };
