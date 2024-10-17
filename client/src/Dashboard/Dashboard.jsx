@@ -10,12 +10,12 @@ const Dashboard = () => {
     <Box sx={{ display: "flex" }}>
       <Navbar />
       <Sidebar />
-      {/* <RightSidebar /> */}
+      <RightSidebar />
       <Box
         sx={{
-          marginLeft: 250,  // Space for the left sidebar
-          marginRight: 250, // Space for the right sidebar
-          marginTop: "64px", // Adjust this to the height of your navbar
+          marginLeft: 250,  
+          marginRight: 250, 
+          marginTop: "64px",
           padding: 2,
           flexGrow: 1,
         }}
