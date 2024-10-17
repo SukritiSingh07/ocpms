@@ -11,7 +11,6 @@ const Sidebar = () => {
     height: "calc(100vh - 64px)", 
     background: "#AD49E1",
     position: "fixed",
-    flexShrink: 0,
   }}
 >
     

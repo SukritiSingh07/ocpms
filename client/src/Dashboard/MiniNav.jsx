@@ -25,7 +25,9 @@ function MiniNav(props) {
         right: isRightSidebarOpen ? 255 : 0, 
         height: "8vh",
         display: "flex",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        zIndex: 1,
+        opacity: 1,
       }}
     >
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

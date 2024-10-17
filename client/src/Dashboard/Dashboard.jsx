@@ -22,10 +22,21 @@ const Dashboard = () => {
         <Box
           sx={{
             padding: 2,
+            position: "relative",
+            right: isRightSidebarOpen?255:0,
+            left: 250,
           }}
         >
           <MiniNav toggleRightSidebar={toggleRightSidebar} isRightSidebarOpen={isRightSidebarOpen} />
-          <MainKanban />
+          <Box sx={{ 
+          flexGrow: 1, 
+          padding: 2, 
+          marginRight: isRightSidebarOpen ? 63 : 30, 
+          marginTop: 3,
+          transition: "margin-right 0.3s ease",
+        }}>
+        <MainKanban />
+      </Box>
         </Box>
         {isRightSidebarOpen && <RightSidebar />}
       </Box>
