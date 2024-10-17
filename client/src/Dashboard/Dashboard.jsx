@@ -21,7 +21,6 @@ const Dashboard = () => {
         
         <Box
           sx={{
-            flexGrow: 1,
             position: "relative", 
             padding: 2,
           }}
