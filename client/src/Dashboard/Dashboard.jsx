@@ -31,7 +31,7 @@ const Dashboard = () => {
         }}
       >
          <MiniNav  />
-      <MainKanban />
+          <MainKanban />
         <h1>Dashboard Content</h1>
       </Box>
       <RightSidebar />

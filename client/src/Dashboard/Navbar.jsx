@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 import { StyledToolbar } from "./DashboardStyle";
-import { ToggleButton } from "react-bootstrap";
+// import { ToggleButton } from "react-bootstrap";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 const Navbar = (props) => {

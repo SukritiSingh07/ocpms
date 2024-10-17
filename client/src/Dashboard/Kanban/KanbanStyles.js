@@ -1,9 +1,26 @@
 import { Box, styled } from "@mui/material";
 
 export const KanbanArea = styled(Box)(({ theme }) => ({
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "80px",
-    color: "rgb(80, 80, 80)",
-    fontFamily: "Inter, sans-serif",
+    height: "auto",
+    width: "100vw",
+    zIndex: 1,
 }))
+
+export const TaskListArea = styled(Box)(({ theme }) => ({
+    height: "auto",
+    width: "100vw",
+    zIndex: 1,
+}))
+
+export const TaskCard = styled(Box)(({ theme }) => ({
+    height: "auto",
+    width: "100vw",
+    zIndex: 1,
+}))
+
+export const TaskCreateCard = styled(Box)(({ theme }) => ({
+    height: "auto",
+    width: "100vw",
+    zIndex: 1,
+}))
+

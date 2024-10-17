@@ -1,9 +1,14 @@
 import { KanbanArea } from "./KanbanStyles";
+import Todo from "./Todo";
+import Doing from "./Doing";
+import Done from "./Done";
 
 function MainKanban(){
     return(
         <KanbanArea>
-            HI
+            <Todo />
+            <Doing />
+            <Done />
         </KanbanArea>
     )
 }
