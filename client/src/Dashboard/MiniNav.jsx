@@ -6,11 +6,12 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Box , IconButton, Toolbar, Typography} from "@mui/material";
 
 function MiniNav(props) {
-  const { isRightSidebarOpen, toggleRightSidebar } = props;
+  const { isRightSidebarOpen, toggleRightSidebar, onTabChange } = props;
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    onTabChange(newValue);
   };
 
   return (

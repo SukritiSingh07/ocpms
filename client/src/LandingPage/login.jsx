@@ -2,6 +2,7 @@ import {Link } from "@mui/material";
 import React, { useState, useEffect } from "react"
 import { LoginBox, LoginButton, TextPlace } from "./LandingPageStyles";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 
 const divstyle = {
@@ -13,9 +14,14 @@ const divstyle = {
     width: "50%"
 }
 function Login() {
+    const navigate = useNavigate();
     const [password, setPassword] = useState("");
     const [confpass, setconfPass] = useState("");
     const [hasError, setHasError] = useState(false);
+
+    const handleLogin=()=>{
+        navigate('/dashboard');
+    }
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
@@ -98,6 +104,7 @@ function Login() {
                         />
                     )}
                     <LoginButton
+                        onClick={handleLogin}
                         variant="contained"
                         fullWidth
                         margin="normal"                      
@@ -105,7 +112,7 @@ function Login() {
                         {signup ? "Sign Up" : "Sign In"}
                     </LoginButton>
                 </form>
-                <Link to="/dashboard" sx={{ padding: 3, cursor: "pointer", color: '#7400b8', textDecoration: "none", fontStyle: "italic",
+                <Link sx={{ padding: 3, cursor: "pointer", color: '#7400b8', textDecoration: "none", fontStyle: "italic",
                         '&:hover':{
                             textDecoration:'underline'
                         }

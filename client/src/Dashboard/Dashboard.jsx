@@ -5,12 +5,19 @@ import RightSidebar from "./RightSidebar";
 import { Box } from "@mui/material";
 import MiniNav from "./MiniNav";
 import MainKanban from "./Kanban/MainKanban";
+import TabPanel from "./Tabpanel";
 
 const Dashboard = () => {
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
   const toggleRightSidebar = () => {
     setIsRightSidebarOpen(!isRightSidebarOpen);
+  };
+
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  const handleTabChange = (newValue) => {
+    setSelectedTab(newValue); 
   };
 
   return (
@@ -27,7 +34,11 @@ const Dashboard = () => {
             left: 250,
           }}
         >
-          <MiniNav toggleRightSidebar={toggleRightSidebar} isRightSidebarOpen={isRightSidebarOpen} />
+          <MiniNav 
+            toggleRightSidebar={toggleRightSidebar} 
+            isRightSidebarOpen={isRightSidebarOpen} 
+            onTabChange={handleTabChange}
+          />
           <Box sx={{ 
           flexGrow: 1, 
           padding: 2, 
@@ -35,7 +46,15 @@ const Dashboard = () => {
           marginTop: 3,
           transition: "margin-right 0.3s ease",
         }}>
-        <MainKanban />
+        <TabPanel value={selectedTab} index={0}>
+              <MainKanban /> 
+            </TabPanel>
+            <TabPanel value={selectedTab} index={1}>
+              <div>Analytics Content Here</div>
+            </TabPanel>
+            <TabPanel value={selectedTab} index={2}>
+              <div>Chat Content Here</div>
+            </TabPanel>
       </Box>
         </Box>
         {isRightSidebarOpen && <RightSidebar />}
