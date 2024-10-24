@@ -5,6 +5,7 @@ import RightSidebar from "./RightSidebar";
 import { Box } from "@mui/material";
 import MiniNav from "./MiniNav";
 import MainKanban from "./Kanban/MainKanban";
+import MainChat from "./Chat/MainChat";
 import TabPanel from "./Tabpanel";
 
 const Dashboard = () => {
@@ -21,7 +22,7 @@ const Dashboard = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': {display: 'none', },'-ms-overflow-style': 'none', 'scrollbar-width': 'none'}} >
       <Navbar />
       <Box sx={{ display: "flex", flexGrow: 1, marginTop: "64px", position:"relative" }}> 
         <Sidebar />
@@ -53,7 +54,7 @@ const Dashboard = () => {
               <div>Analytics Content Here</div>
             </TabPanel>
             <TabPanel value={selectedTab} index={2}>
-              <div>Chat Content Here</div>
+              <MainChat />
             </TabPanel>
       </Box>
         </Box>

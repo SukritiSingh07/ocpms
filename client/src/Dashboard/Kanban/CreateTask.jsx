@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TaskCreateCard } from './KanbanStyles';
 import { Typography, TextField, Button, Box } from '@mui/material';
 
-const CreateTask = () => {
+const CreateTask = ({ addTask }) => {
     const [taskDetails, setTaskDetails] = useState({
         title: '',
         description: '',
@@ -16,8 +16,12 @@ const CreateTask = () => {
     };
 
     const handleAddTask = () => {
-        // Logic for adding the task, e.g., sending data to backend or updating state
-        console.log(taskDetails);
+        if (taskDetails.title && taskDetails.description && taskDetails.assignedTo && taskDetails.timer) {
+            addTask(taskDetails); // Add the task using the passed function
+            setTaskDetails({ title: '', description: '', assignedTo: '', timer: '' }); // Reset the form after adding
+        } else {
+            console.log("Please fill all fields!");
+        }
     };
 
     return (
