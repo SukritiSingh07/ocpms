@@ -1,11 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { TaskCard } from './KanbanStyles';
-import { Typography, Box, Avatar, Stack } from '@mui/material';
+import { Typography, Box, Stack } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PersonIcon from '@mui/icons-material/Person';
 import DoneIcon from '@mui/icons-material/Done';
+import DelIcon from '@mui/icons-material/Delete';
 
-const TaskCardComponent = ({ task }) => {
+const TaskCardComponent = ({ task, moveTaskToNextList, delTask }) => {
+    
+    const [timeLeft, setTimeLeft] = useState(task.timer);
+
+    useEffect(() => {
+        let intervalId;
+        if (task.list === 'doing' && timeLeft > 0) {
+            intervalId = setInterval(() => {
+                setTimeLeft(prev => {
+                    if (prev > 0) {
+                        return prev - 1; 
+                    } else {
+                        clearInterval(intervalId); 
+                        return 0;
+                    }
+                });
+            }, 60000); 
+        }
+
+        return () => clearInterval(intervalId); 
+    }, [task.list, timeLeft]);
+
     return (
         <TaskCard>
             <Typography 
@@ -30,15 +52,20 @@ const TaskCardComponent = ({ task }) => {
                     <Typography variant="body2" color="textSecondary">
                         {task.assignedTo}
                     </Typography>
-                </Stack>
+               </Stack>
 
                 <Stack direction="row" alignItems="center" spacing={1}>
                     <AccessTimeIcon color="action" />
                     <Typography variant="body2" color="textSecondary">
-                        {task.timer} mins left
+                        {timeLeft > 0 ? `${timeLeft} mins left` : 'Time over!'}
                     </Typography>
                 </Stack>
-                <DoneIcon />
+
+                {task.list === "done" ? (
+                    <DelIcon onClick={() => delTask(task.id)} style={{ cursor: 'pointer' }} />
+                ) : (
+                    <DoneIcon onClick={() => moveTaskToNextList(task.id)} style={{ cursor: 'pointer' }} />
+                )}
             </Box>
         </TaskCard>
     );
