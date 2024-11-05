@@ -264,3 +264,12 @@ export const LoginButton = styled(Button)(({ theme }) => (
             borderRadius: '20px',
         }
 ))
+
+export const formstyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "1vh"
+  };
+  
