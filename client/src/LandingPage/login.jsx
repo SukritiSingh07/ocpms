@@ -79,7 +79,7 @@ function Login() {
             const data = await response.json();
             console.log(data);
             if (data.success) {
-                navigate('/dashboard');
+                navigate('/dashboard', { state: { user: data} });
             }
     
         } catch (error) {

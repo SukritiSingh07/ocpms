@@ -9,7 +9,10 @@ const doingSchema = mongoose.Schema({
         ref: "Member",
     },
     due_date: String,
-    status: String,
+    status: {
+        type: String,
+        default: "doing"
+    }
 })
 
 const Doing = mongoose.model("Doing",doingSchema);

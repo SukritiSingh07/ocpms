@@ -1,38 +1,71 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { ChatContainer, MessageInputArea, MessageList, MessageItem, MessageBubble } from './ChatStyles';
+import { io } from 'socket.io-client';
 
-const MainChat = () => {
-    const [messages, setMessages] = useState([
-        { id: 1, text: 'Hello there!', sender: 'User1' },
-        { id: 2, text: 'Hey! How’s it going?', sender: 'User2' },
-    ]);
+const MainChat = ({ projectId, userId, userName }) => {
+    const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const messageEndRef = useRef(null);
+    const socket = useRef(io('http://localhost:5000'));
 
+    // Join the room and listen for messages
     useEffect(() => {
-        messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+        socket.current.emit('joinRoom', { projectId });
 
+        // Fetch initial chat history
+        fetchMessages();
+
+        // Receive new messages from server
+        socket.current.on('receiveMessage', (message) => {
+            setMessages((prevMessages) => [...prevMessages, message]);
+            messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Cleanup on unmount
+        return () => {
+            socket.current.disconnect();
+        };
+    }, [projectId]);
+
+    // Fetch previous chat messages
+    const fetchMessages = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/dashboard/chat/${projectId}`);
+            if (response.ok) {
+                const data = await response.json();
+                setMessages(data);
+            } else {
+                console.error('Failed to fetch messages:', response.status);
+            }
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    };
+
+    // Handle sending a message
     const handleSendMessage = () => {
         if (newMessage.trim() === '') return;
-        const newMsg = {
-            id: messages.length + 1,
+
+        // Emit message to socket server
+        socket.current.emit('sendMessage', {
+            projectId,
+            senderId: userId,
+            senderName: userName,
             text: newMessage,
-            sender: 'User1',  
-        };
-        setMessages([...messages, newMsg]);
-        setNewMessage('');  
+        });
+
+        setNewMessage('');
     };
 
     return (
         <ChatContainer>
             <MessageList>
                 {messages.map((message) => (
-                    <MessageItem key={message.id}>
-                        <MessageBubble isSender={message.sender === 'User1'}>
+                    <MessageItem key={message._id || Math.random()}>
+                        <MessageBubble isSender={message.sender === userId}>
                             <Typography variant="body1">
-                                <strong>{message.sender}: </strong> {message.text}
+                                <strong>{message.senderName || 'User'}:</strong> {message.text}
                             </Typography>
                         </MessageBubble>
                     </MessageItem>

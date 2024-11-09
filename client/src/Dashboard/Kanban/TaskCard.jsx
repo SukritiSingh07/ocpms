@@ -61,10 +61,10 @@ const TaskCardComponent = ({ task, moveTaskToNextList, delTask }) => {
                     </Typography>
                 </Stack>
 
-                {task.list === "done" ? (
-                    <DelIcon onClick={() => delTask(task.id)} style={{ cursor: 'pointer' }} />
+                {task.status === "done" ? (
+                    <DelIcon onClick={() => delTask(task._id)} style={{ cursor: 'pointer' }} />
                 ) : (
-                    <DoneIcon onClick={() => moveTaskToNextList(task.id)} style={{ cursor: 'pointer' }} />
+                    <DoneIcon onClick={() => moveTaskToNextList(task._id)} style={{ cursor: 'pointer' }} />
                 )}
             </Box>
         </TaskCard>

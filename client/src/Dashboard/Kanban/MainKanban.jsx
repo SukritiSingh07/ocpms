@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { KanbanArea } from './KanbanStyles';
 import { Grid } from '@mui/material';
 import Todo from './Todo';
@@ -6,60 +6,117 @@ import Doing from './Doing';
 import Done from './Done';
 
 const MainKanban = () => {
+    const [tasks, setTasks] = useState({ todos: [], doings: [], dones: [] });
 
-    const initialTasks = [
-        { id: 1, title: 'Task 1', description: 'Description for Task 1', assignedTo: 'Alice', timer: 120, list: 'todo' },
-        { id: 2, title: 'Task 2', description: 'Description for Task 2', assignedTo: 'Bob', timer: 90, list: 'todo' },
-        { id: 3, title: 'Task 3', description: 'Description for Task 3', assignedTo: 'Charlie', timer: 60, list: 'doing' },
-        { id: 4, title: 'Task 4', description: 'Description for Task 4', assignedTo: 'Dave', timer: 0, list: 'done' }
-    ];
+    // Fetch tasks on component mount
+    useEffect(() => {
+        fetchTasks();
+    }, []);
 
-    const [tasks, setTasks] = useState(initialTasks);
-
-    const addTask = (newTask) => {
-        setTasks(prevTasks => [...prevTasks, { ...newTask, id: prevTasks.length + 1, list: 'todo' }]);
+    const fetchTasks = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/dashboard/kanban');
+            const data = await response.json();
+            console.log(data);
+            setTasks(data);
+        } catch (error) {
+            console.error('Error fetching tasks:', error);
+        }
     };
 
-    const moveTaskToNextList = (taskId) => {
-        setTasks(prevTasks => 
-            prevTasks.map(task => 
-                task.id === taskId
-                    ? { ...task, list: task.list === 'todo' ? 'doing' : 'done' }
-                    : task
-            )
-        );
+    const addTask = async (newTask) => {
+        try {
+            const response = await fetch('http://localhost:5000/dashboard/kanban/todo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newTask)
+            });
+            const createdTask = await response.json();
+            setTasks.todos(prevTasks => [...prevTasks, createdTask]);
+        } catch (error) {
+            console.error('Error adding task:', error);
+        }
     };
 
-    const delTask = (taskId) => {
-        setTasks(prevTasks => 
-            prevTasks.filter(task => {
-                return !(task.id === taskId && task.list === 'done');
-            })
-        );
+    const moveTaskToNextList = async (taskId) => {
+        try {
+            let task, currentList;
+            
+            for (let listName of ['todos', 'doings', 'dones']) {
+                task = tasks[listName].find(t => t._id === taskId);
+                if (task) {
+                    currentList = listName;
+                    break;
+                }
+            }
+    
+            if (!task) {
+                console.error("Task not found");
+                return;
+            }
+    
+            const nextList = currentList === 'todos' ? 'doings' : currentList === 'doings' ? 'dones' : null;
+            const endpoint = nextList === 'doings' 
+                ? `http://localhost:5000/dashboard/kanban/move-to-doing/${taskId}`
+                : `http://localhost:5000/dashboard/kanban/move-to-done/${taskId}`;
+    
+            if (!nextList) {
+                console.error("Task is already in the final list");
+                return;
+            }
+    
+            const response = await fetch(endpoint, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...task, list: nextList })
+            });
+    
+            if (response.ok) {
+                const updatedTask = await response.json();
+                
+                setTasks(prevTasks => ({
+                    ...prevTasks,
+                    [currentList]: prevTasks[currentList].filter(t => t._id !== taskId),
+                    [nextList]: [...prevTasks[nextList], updatedTask]
+                }));
+            } else {
+                console.error("Failed to update task on server");
+            }
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
     };
     
-
-    const startTimer = (taskId) => {
-        setTasks(prevTasks => 
-            prevTasks.map(task => 
-                task.id === taskId && task.list === 'doing' && task.timer > 0
-                    ? { ...task, timer: task.timer - 1 }
-                    : task
-            )
-        );
+    
+    
+    
+    const delTask = async (taskId) => {
+        try {
+            await fetch(`http://localhost:5000/dashboard/kanban/done/${taskId}`, { method: 'DELETE' });
+    
+            setTasks(prevTasks => ({
+                ...prevTasks,
+                todos: prevTasks.todos.filter(task => task._id !== taskId),
+                doings: prevTasks.doings.filter(task => task._id !== taskId),
+                dones: prevTasks.dones.filter(task => task._id !== taskId)
+            }));
+        } catch (error) {
+            console.error('Error deleting task:', error);
+        }
     };
-
+    
+    
     return (
         <KanbanArea>
             <Grid container spacing={2}>
                 <Grid item xs={4}>
-                <Todo tasks={tasks.filter(task => task.list === 'todo')} moveTaskToNextList={moveTaskToNextList} addTask={addTask}/>
+                    <Todo tasks={tasks.todos}  moveTaskToNextList={moveTaskToNextList} addTask={addTask} />
                 </Grid>
                 <Grid item xs={4}>
-                <Doing tasks={tasks.filter(task => task.list === 'doing')} moveTaskToNextList={moveTaskToNextList} startTimer={startTimer} />
+                    <Doing tasks={tasks.doings} moveTaskToNextList={moveTaskToNextList} />
                 </Grid>
                 <Grid item xs={4}>
-                <Done tasks={tasks.filter(task => task.list === 'done')} delTask={delTask} />
+                    <Done tasks={tasks.dones} delTask={delTask} />
                 </Grid>
             </Grid>
         </KanbanArea>

@@ -7,8 +7,13 @@ import MiniNav from "./MiniNav";
 import MainKanban from "./Kanban/MainKanban";
 import MainChat from "./Chat/MainChat";
 import TabPanel from "./Tabpanel";
+import { useLocation } from 'react-router-dom';
 
 const Dashboard = () => {
+  const location = useLocation();
+  const user = location.state?.user.user;
+  console.log(user);
+
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
   const toggleRightSidebar = () => {
@@ -54,7 +59,7 @@ const Dashboard = () => {
               <div>Analytics Content Here</div>
             </TabPanel>
             <TabPanel value={selectedTab} index={2}>
-              <MainChat />
+              <MainChat projectId={user._id} userId={user._id} userName={user.username}/>
             </TabPanel>
       </Box>
         </Box>

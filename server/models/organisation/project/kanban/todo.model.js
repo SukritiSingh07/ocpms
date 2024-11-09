@@ -9,8 +9,11 @@ const todoSchema = mongoose.Schema({
         ref: "Member",
     },
     due_date: String,
-    status: String,
-})
+    status: {
+        type: String,
+        default: "todo"
+    }
+});
 
 const Todo = mongoose.model("Todo",todoSchema);
 

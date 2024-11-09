@@ -9,7 +9,10 @@ const doneSchema = mongoose.Schema({
         ref: "Member",
     },
     due_date: String,
-    status: String,
+    status: {
+        type: String,
+        default: "done"
+    }
 })
 
 const Done = mongoose.model("Done",doneSchema);
