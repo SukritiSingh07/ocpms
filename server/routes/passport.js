@@ -32,10 +32,5 @@ passport.deserializeUser(function(id, done) {
     // });
     User.findById(id).then((user)=>{
       done(null, user);
-    }).error((err)=>{
-      done(err);
-      console.log("error here go back stop tring to go into someone else dashboard");
     })
-
-    
 });
