@@ -1,88 +1,120 @@
-import React, { useState } from "react";
-import { Box, TextField, Typography, Button } from "@mui/material";
+  import React, { useState } from "react";
+  import { Box, TextField, Typography, Button } from "@mui/material";
 
-function Create() {
-  // State to store the organization name
-  const [orgName, setOrgName] = useState("");
-  const [projectName, setProjectName] = useState(""); // State for project name
-  const [isOrgCreated, setIsOrgCreated] = useState(false); // Flag to track if the org is created
+  function Create() {
+    const [form, setForm] = useState({ orgName: "", projectName: "" });
+    const [isOrgCreated, setIsOrgCreated] = useState(false);
 
-  // Handle organization creation form submission
-  const handleOrgSubmit = (e) => {
-    e.preventDefault(); // Prevent page reload on submit
-    if (orgName) {
-      console.log("Organization Created: ", orgName);
-      setIsOrgCreated(true); // Set the flag to true once organization is created
-    } else {
-      console.log("Please enter an organization name");
-    }
-  };
+    // Handle change for form inputs
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setForm({
+        ...form,
+        [name]: value,
+      });
+    };
 
-  // Handle project creation form submission
-  const handleProjectSubmit = (e) => {
-    e.preventDefault(); // Prevent page reload on submit
-    if (projectName) {
-      console.log("Project Created: ", projectName);
-      // You can handle the actual project creation logic here
-      // For example, make an API call to create the project
-    } else {
-      console.log("Please enter a project name");
-    }
-  };
+    const url = 'http://localhost:5000/org/createorg';
 
-  return (
-    <>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 300,
-          bgcolor: "background.paper",
-          boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
-        }}
-      >
-        <Typography variant="h6" component="h2">
-          {isOrgCreated ? "Create Project" : "Create Organization"}
-        </Typography>
+    // Handle form submission for both organization and project together
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (!form.orgName || !form.projectName) {
+        console.log("Please enter both organization and project names.");
+        return;
+      }
+      console.log(form);
 
-        {/* Organization Form */}
-        {!isOrgCreated ? (
-          <form onSubmit={handleOrgSubmit}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Organization Name"
-              variant="outlined"
-              value={orgName}
-              onChange={(e) => setOrgName(e.target.value)} // Update state on input change
-            />
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              Create Organization
-            </Button>
-          </form>
-        ) : (
-          // Project Form
-          <form onSubmit={handleProjectSubmit}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Project Name"
-              variant="outlined"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)} 
-            />
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              Create Project
-            </Button>
-          </form>
-        )}
-      </Box>
-    </>
-  );
-}
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form), // Submit both orgName and projectName together
+        });
 
-export default Create;
+        if (!response.ok) { 
+          throw new Error(`HTTP error! Status: ${response.status}`); 
+        }
+
+        const data = await response.json();
+        console.log("Organization and project created:", data);
+
+        // Reset form after successful submission
+        setForm({ orgName: "", projectName: "" });
+        setIsOrgCreated(false);
+
+      } catch (error) {
+        console.error("Fetch error:", error.message);
+      }
+    };
+
+    return (
+      <>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 300,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="h6" component="h2">
+            {isOrgCreated ? "Create Project" : "Create Organization"}
+          </Typography>
+
+          {/* Organization Form */}
+          {!isOrgCreated ? (
+            <form onSubmit={(e) => { e.preventDefault(); setIsOrgCreated(true); }}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Organization Name"
+                variant="outlined"
+                name="orgName"
+                value={form.orgName}
+                onChange={handleInputChange}
+              />
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                Next
+              </Button>
+            </form>
+          ) : (
+            // Project Form
+            <form onSubmit={handleSubmit}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Project Name"
+                variant="outlined"
+                name="projectName"
+                value={form.projectName}
+                onChange={handleInputChange}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Description"
+                variant="outlined"
+                name="ProjDesc"
+                value={form.projectName}
+                onChange={handleInputChange}
+              />
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                Submit
+              </Button>
+            </form>
+          )}
+        </Box>
+      </>
+    );
+  }
+
+  export default Create;
