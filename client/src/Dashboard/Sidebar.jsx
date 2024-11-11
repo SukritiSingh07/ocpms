@@ -8,8 +8,6 @@ import {
   Collapse,
   Button,
   Modal,
-  Typography,
-  TextField
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -18,7 +16,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Join from './join';
 import Create from './create';
 
-const Sidebar = () => {
+const Sidebar = (props) => {
   const [open, setOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -76,12 +74,12 @@ const Sidebar = () => {
 
       {/* Join Modal */}
       <Modal open={isJoinModalOpen} onClose={handleJoinClose}>
-        <Join />
+        <Join user={props.user} />
       </Modal>
 
       {/* Create Modal */}
       <Modal open={isCreateModalOpen} onClose={handleCreateClose}>
-        <Create />
+        <Create user={props.user}/>
       </Modal>
     </Box>
   );

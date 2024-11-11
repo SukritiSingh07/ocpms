@@ -1,56 +1,95 @@
 const express = require("express");
-const Organisation = require("../models/organisation/organisation.model"); // Correct import for organisation model
-const Project = require("../models/organisation/projects.model"); // Import for Project model
-const router = express.Router(); // Correct initialization for Express router
+const router = express.Router();
+const Organisation = require("../models/organisation/organisation.model");
+const Project = require("../models/organisation/project.model.js"); 
 
-// Function to generate a unique ID by combining orgName with a random 6-letter suffix
+
 function generateUniqueId(baseName) {
-    const randomSuffix = Array.from({ length: 6 }, () => 
+    const randomSuffix = Array.from({ length: 5 }, () => 
         String.fromCharCode(Math.floor(Math.random() * 26) + (Math.random() < 0.5 ? 65 : 97))
     ).join('');
     return `${baseName}_${randomSuffix}`;
 }
 
-// POST route to create a new organization and project
+
 router.post("/createorg", async (req, res) => {
-    const { orgName, projectName, projectdesc } = req.body; // Assuming projectdesc is passed in req.body
-
-    // Generate unique IDs
-    const orgId = generateUniqueId(orgName); // orgId is derived from orgName
-    const projId = generateUniqueId(`${orgName}_proj`); // projId with orgName prefix
-
+    const { orgName, projectName, projectdesc, user } = req.body; 
     try {
-        // Create the organization
+        let orgID = generateUniqueId(orgName);
+        let projectID = generateUniqueId(projectName);
+
+        let existingOrg = await Organisation.findOne({ orgID });
+        while (existingOrg) {
+            orgID = generateUniqueId(orgName);  
+            existingOrg = await Organisation.findOne({ orgID }); 
+        }
+
+        let existingProject = await Project.findOne({ projectID });
+        while (existingProject) {
+            projectID = generateUniqueId(projectName); 
+            existingProject = await Project.findOne({ projectID }); 
+        }
+
+        const newProject = new Project({
+            projectName,
+            description: projectdesc,
+            projectID,
+            organisation: null, 
+            member_id: [user._id] 
+        });
+        await newProject.save();
+
         const newOrganisation = new Organisation({
             name: orgName,
-            orgID: orgId,
+            orgAdmin_id: user._id,  
+            orgID,
+            projects: [newProject._id]
         });
+        await newOrganisation.save();
 
-        // Save the organization to get its ObjectId for the project
-        const savedOrganisation = await newOrganisation.save();
+        newProject.organisation = newOrganisation._id;
+        await newProject.save();
 
-        // Create the project with reference to the organization
-        const newProject = new Project({
-            projectName: projectName,
-            description: projectdesc,
-            projectID: projId, 
-            createdAt: new Date() 
-        });
-
-        const savedProject = await newProject.save();
-
-        // Add the project ID to the organization's projects array
-        savedOrganisation.projects.push(savedProject._id);
-        await savedOrganisation.save();
-
-        res.status(201).json({ 
-            message: "Organization and project created successfully", 
-            orgId, 
-            projId 
+        res.status(201).json({
+            message: "Organisation and Project created successfully",
+            organisation: newOrganisation,
+            project: newProject
         });
     } catch (error) {
-        res.status(500).json({ message: "Failed to create organization", error });
+        console.error(error);
+        res.status(500).json({ error: "Error creating organisation or project" });
     }
 });
+
+router.post("/joinorg", async (req, res) => {
+    const { user, orgCode, projCode } = req.body;
+
+    try {
+
+        const organisation = await Organisation.findOne({ orgID: orgCode });
+        if (!organisation) {
+            return res.status(404).json({ error: "Organisation not found" });
+        }
+
+        const project = await Project.findOne({ projectID: projCode, organisation: organisation._id });
+        if (!project) {
+            return res.status(404).json({ error: "Project not found" });
+        }
+        project.member_id.push(user); 
+        
+        await project.save();
+        user.organisations.push(organisation._id);
+        await user.save();
+
+        res.status(200).json({
+            message: "User added to the project successfully",
+            project,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error adding user to project" });
+    }
+});
+
 
 module.exports = router;

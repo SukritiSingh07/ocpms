@@ -1,21 +1,24 @@
-// organisation.model.js (using require)
 const mongoose = require('mongoose');
-const projects=require('./projects.model');
 
-const organisationSchema = mongoose.Schema({
-  name: String,
-  orgAdmin_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "OrgAdmin",
+const organisationSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  orgAdmin_id: {  
+    type: mongoose.Schema.Types.ObjectId, 
+    required: true,
+    ref: "admin"
   },
   orgID: {
-    type: String, // Use uuidv4 to generate a unique ID for each organization
-    unique: true,  // Ensure the orgID is unique across all documents in the collection
+    type: String,
+    unique: true,
+    required: true
   },
   projects: [
     {
-      type: mongoose.Schema.Types.ObjectId, // References the Project model if projects are stored in another collection
-      ref: "Project", // Name of the model for projects if using a separate model
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project"
     }
   ]
 });

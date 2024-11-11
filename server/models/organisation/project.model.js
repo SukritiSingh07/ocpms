@@ -10,7 +10,7 @@ const projectSchema = mongoose.Schema({
     required: false,
   },
   projectID: {
-    type: String, // Use a unique identifier for the project, similar to orgID in Organisation model
+    type: String,
     unique: true,
     required: true,
   },
@@ -18,15 +18,10 @@ const projectSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  status: {
-    type: String,
-    enum: ["Pending", "In Progress", "Completed"], // Example statuses for the project
-    default: "Pending",
-  },
   member_id: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Member", // Reference to Member model
+      ref: "Member",
     }
   ],
   chat_id: {
@@ -39,7 +34,7 @@ const projectSchema = mongoose.Schema({
   },
   organisation: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "organisation"
+    ref: "Organisation"
   }
 });
 

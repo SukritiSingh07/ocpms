@@ -1,11 +1,12 @@
-  import React, { useState } from "react";
+  import React, { useEffect, useState } from "react";
   import { Box, TextField, Typography, Button } from "@mui/material";
 
-  function Create() {
-    const [form, setForm] = useState({ orgName: "", projectName: "" });
+  function Create(props) {
     const [isOrgCreated, setIsOrgCreated] = useState(false);
-
-    // Handle change for form inputs
+    const user=props.user;
+    const [form, setForm] = useState({user: user});
+    // console.log(user);
+  
     const handleInputChange = (e) => {
       const { name, value } = e.target;
       setForm({
@@ -13,7 +14,7 @@
         [name]: value,
       });
     };
-
+    
     const url = 'http://localhost:5000/org/createorg';
 
     // Handle form submission for both organization and project together
@@ -43,7 +44,7 @@
         console.log("Organization and project created:", data);
 
         // Reset form after successful submission
-        setForm({ orgName: "", projectName: "" });
+        setForm({ orgName: "", projectName: "" , projDesc:""});
         setIsOrgCreated(false);
 
       } catch (error) {
@@ -104,7 +105,7 @@
                 label="Description"
                 variant="outlined"
                 name="ProjDesc"
-                value={form.projectName}
+                value={form.projDesc}
                 onChange={handleInputChange}
               />
               <Button type="submit" variant="contained" color="primary" fullWidth>
