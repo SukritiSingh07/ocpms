@@ -9,26 +9,21 @@ const MainChat = ({ projectId, userId, userName }) => {
     const messageEndRef = useRef(null);
     const socket = useRef(io('http://localhost:5000'));
 
-    // Join the room and listen for messages
     useEffect(() => {
         socket.current.emit('joinRoom', { projectId });
 
-        // Fetch initial chat history
         fetchMessages();
 
-        // Receive new messages from server
         socket.current.on('receiveMessage', (message) => {
             setMessages((prevMessages) => [...prevMessages, message]);
             messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
         });
 
-        // Cleanup on unmount
         return () => {
             socket.current.disconnect();
         };
     }, [projectId]);
 
-    // Fetch previous chat messages
     const fetchMessages = async () => {
         try {
             const response = await fetch(`http://localhost:5000/dashboard/chat/${projectId}`);
@@ -43,17 +38,34 @@ const MainChat = ({ projectId, userId, userName }) => {
         }
     };
 
-    // Handle sending a message
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (newMessage.trim() === '') return;
 
-        // Emit message to socket server
-        socket.current.emit('sendMessage', {
+        const messageData = {
             projectId,
             senderId: userId,
             senderName: userName,
             text: newMessage,
-        });
+        };
+
+        socket.current.emit('sendMessage', messageData);
+
+            // Update the local state immediately to show the message
+    setMessages((prevMessages) => [
+        ...prevMessages,
+        { ...messageData, _id: Date.now().toString(), createdAt: new Date() },
+    ]);
+
+        // Optionally save the message to the database via POST request
+        try {
+            await fetch('http://localhost:5000/dashboard/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(messageData),
+            });
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
 
         setNewMessage('');
     };
@@ -62,10 +74,10 @@ const MainChat = ({ projectId, userId, userName }) => {
         <ChatContainer>
             <MessageList>
                 {messages.map((message) => (
-                    <MessageItem key={message._id || Math.random()}>
-                        <MessageBubble isSender={message.sender === userId}>
+                    <MessageItem key={message._id}>
+                        <MessageBubble isSender={message.senderId === userId}>
                             <Typography variant="body1">
-                                <strong>{message.senderName || 'User'}:</strong> {message.text}
+                                <strong>{message.senderName}:</strong> {message.text}
                             </Typography>
                         </MessageBubble>
                     </MessageItem>

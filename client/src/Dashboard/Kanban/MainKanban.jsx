@@ -17,7 +17,7 @@ const MainKanban = () => {
         try {
             const response = await fetch('http://localhost:5000/dashboard/kanban');
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
             setTasks(data);
         } catch (error) {
             console.error('Error fetching tasks:', error);
@@ -26,24 +26,32 @@ const MainKanban = () => {
 
     const addTask = async (newTask) => {
         try {
+            const taskWithStatus = {
+                ...newTask,
+                status: "todo", // Explicitly set status for new tasks
+            };
             const response = await fetch('http://localhost:5000/dashboard/kanban/todo', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newTask)
+                body: JSON.stringify(taskWithStatus),
             });
             const createdTask = await response.json();
-            setTasks.todos(prevTasks => [...prevTasks, createdTask]);
+            setTasks((prevTasks) => ({
+                ...prevTasks,
+                todos: [...prevTasks.todos, createdTask],
+            }));
         } catch (error) {
             console.error('Error adding task:', error);
         }
     };
+    
 
     const moveTaskToNextList = async (taskId) => {
         try {
             let task, currentList;
             
             for (let listName of ['todos', 'doings', 'dones']) {
-                task = tasks[listName].find(t => t._id === taskId);
+                task = tasks[listName].find((t) => t._id === taskId);
                 if (task) {
                     currentList = listName;
                     break;
@@ -56,29 +64,43 @@ const MainKanban = () => {
             }
     
             const nextList = currentList === 'todos' ? 'doings' : currentList === 'doings' ? 'dones' : null;
-            const endpoint = nextList === 'doings' 
-                ? `http://localhost:5000/dashboard/kanban/move-to-doing/${taskId}`
-                : `http://localhost:5000/dashboard/kanban/move-to-done/${taskId}`;
-    
             if (!nextList) {
                 console.error("Task is already in the final list");
                 return;
             }
     
+            const updatedTask = {
+                ...task,
+                status: nextList,
+                timerEnd: task.timerEnd,  // Make sure this field is preserved
+            };
+    
+            const endpoint = nextList === 'doings'
+                ? `http://localhost:5000/dashboard/kanban/move-to-doing/${taskId}`
+                : `http://localhost:5000/dashboard/kanban/move-to-done/${taskId}`;
+    
             const response = await fetch(endpoint, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...task, list: nextList })
+                body: JSON.stringify(updatedTask),
             });
     
             if (response.ok) {
-                const updatedTask = await response.json();
-                
-                setTasks(prevTasks => ({
-                    ...prevTasks,
-                    [currentList]: prevTasks[currentList].filter(t => t._id !== taskId),
-                    [nextList]: [...prevTasks[nextList], updatedTask]
-                }));
+                const updatedTaskData = await response.json();
+                // Update the frontend state with the latest task data
+                setTasks((prevTasks) => {
+                    const updatedCurrentList = prevTasks[currentList].filter((t) => t._id !== taskId);
+                    const updatedNextList = [...prevTasks[nextList], updatedTaskData];
+                    
+                    return {
+                        todos: [...prevTasks.todos],
+                        doings: [...prevTasks.doings],
+                        dones: [...prevTasks.dones],
+                        [currentList]: updatedCurrentList,
+                        [nextList]: updatedNextList,
+                    };
+                });
+                await fetchTasks();
             } else {
                 console.error("Failed to update task on server");
             }
@@ -86,6 +108,7 @@ const MainKanban = () => {
             console.error('Error updating task:', error);
         }
     };
+    
     
     
     

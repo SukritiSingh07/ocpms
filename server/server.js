@@ -56,27 +56,24 @@ require("./routes/passport");
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Socket.io connection
 io.on('connection', (socket) => {
-    console.log('User connected');
-    
-    // Join a specific project room
+    // console.log('User connected');
+
     socket.on('joinRoom', ({ projectId }) => {
         socket.join(projectId);
         console.log(`User joined room: ${projectId}`);
     });
 
-    // Sending and receiving messages
-    socket.on('sendMessage', async ({ projectId, senderId, text }) => {
+    socket.on('sendMessage', async ({ projectId, senderId, senderName, text }) => {
         try {
-            const newMessage = { sender: senderId, text };
-            io.to(projectId).emit('receiveMessage', {
-                sender: senderId,
-                text,
-                timestamp: new Date(),
-            });
+            const newMessage = { projectId, senderId, senderName, text };
+            // Save message to DB
+            const message = await Message.create(newMessage);
+
+            // Emit message to all users in the room
+            io.to(projectId).emit('receiveMessage', message);
         } catch (error) {
-            console.error('Error in sendMessage:', error);
+            console.error('Error sending message:', error);
         }
     });
 
@@ -84,6 +81,7 @@ io.on('connection', (socket) => {
         console.log('User disconnected');
     });
 });
+
 
 // MongoDB connection
 mongoose.connect("mongodb://127.0.0.1:27017/ocmps", { useNewUrlParser: true, useUnifiedTopology: true })

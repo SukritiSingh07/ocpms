@@ -8,6 +8,7 @@ import MainKanban from "./Kanban/MainKanban";
 import MainChat from "./Chat/MainChat";
 import TabPanel from "./Tabpanel";
 import { useLocation } from 'react-router-dom';
+import Analytics from "./Analytics/Analytics";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -56,7 +57,7 @@ const Dashboard = () => {
               <MainKanban /> 
             </TabPanel>
             <TabPanel value={selectedTab} index={1}>
-              <div>Analytics Content Here</div>
+              <Analytics />
             </TabPanel>
             <TabPanel value={selectedTab} index={2}>
               <MainChat projectId={user._id} userId={user._id} userName={user.username}/>
