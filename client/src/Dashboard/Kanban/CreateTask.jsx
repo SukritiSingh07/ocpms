@@ -17,8 +17,8 @@ const CreateTask = ({ addTask }) => {
 
     const handleAddTask = () => {
         if (taskDetails.title && taskDetails.description && taskDetails.assignedTo && taskDetails.timer) {
-            addTask(taskDetails); // Add the task using the passed function
-            setTaskDetails({ title: '', description: '', assignedTo: '', timer: '' }); // Reset the form after adding
+            addTask(taskDetails); 
+            setTaskDetails({ title: '', description: '', assignedTo: '', timer: '' }); 
         } else {
             console.log("Please fill all fields!");
         }

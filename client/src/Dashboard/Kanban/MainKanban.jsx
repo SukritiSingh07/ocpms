@@ -8,7 +8,6 @@ import Done from './Done';
 const MainKanban = () => {
     const [tasks, setTasks] = useState({ todos: [], doings: [], dones: [] });
 
-    // Fetch tasks on component mount
     useEffect(() => {
         fetchTasks();
     }, []);
@@ -17,7 +16,7 @@ const MainKanban = () => {
         try {
             const response = await fetch('http://localhost:5000/dashboard/kanban');
             const data = await response.json();
-            // console.log(data);
+            console.log(data);
             setTasks(data);
         } catch (error) {
             console.error('Error fetching tasks:', error);
@@ -28,7 +27,7 @@ const MainKanban = () => {
         try {
             const taskWithStatus = {
                 ...newTask,
-                status: "todo", // Explicitly set status for new tasks
+                status: "todo", 
             };
             const response = await fetch('http://localhost:5000/dashboard/kanban/todo', {
                 method: 'POST',
@@ -72,7 +71,8 @@ const MainKanban = () => {
             const updatedTask = {
                 ...task,
                 status: nextList,
-                timerEnd: task.timerEnd,  // Make sure this field is preserved
+                deadline: task.deadline,  
+                completed_at: nextList === 'dones' ? new Date() : undefined, 
             };
     
             const endpoint = nextList === 'doings'
@@ -87,7 +87,6 @@ const MainKanban = () => {
     
             if (response.ok) {
                 const updatedTaskData = await response.json();
-                // Update the frontend state with the latest task data
                 setTasks((prevTasks) => {
                     const updatedCurrentList = prevTasks[currentList].filter((t) => t._id !== taskId);
                     const updatedNextList = [...prevTasks[nextList], updatedTaskData];

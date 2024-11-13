@@ -4,7 +4,6 @@ const Doing = require("../models/organisation/project/kanban/doing.model");
 const Done = require("../models/organisation/project/kanban/done.model");
 const router = express.Router();
 
-// GET all tasks across todo, doing, and done lists
 router.get("/kanban", async (req, res) => {
     try {
         const todos = await Todo.find();
@@ -21,22 +20,19 @@ router.get("/kanban", async (req, res) => {
     }
 });
 
-// ADD a new task to the 'todo' list
-// In POST /kanban/todo
 router.post("/kanban/todo", async (req, res) => {
     const { title, description, assignedTo, timer, status = "todo" } = req.body;
     
     const timerStart = new Date();
-    const timerEnd = new Date(timerStart.getTime() + timer * 60000); // Add timer (in minutes) to current time
+    const deadline = new Date(timerStart.getTime() + timer * 60000); 
     
     const newTask = new Todo({
         title,
         description,
         assignedTo,
-        timer,
+        assigned_id,  
+        deadline,
         status,
-        timerStart,
-        timerEnd,
     });
 
     try {
@@ -47,14 +43,12 @@ router.post("/kanban/todo", async (req, res) => {
     }
 });
 
-
-// MOVE a task from 'todo' to 'doing'
 router.put("/kanban/move-to-doing/:id", async (req, res) => {
     try {
         const task = await Todo.findByIdAndDelete(req.params.id);
         if (!task) return res.status(404).json({ message: "Task not found in Todo list" });
 
-        const taskInDoing = new Doing({ ...task.toObject(), status: "doing" }); // Set status explicitly
+        const taskInDoing = new Doing({ ...task.toObject(), status: "doing" }); 
         await taskInDoing.save();
         res.status(200).json({ message: "Task moved to Doing", task: taskInDoing });
     } catch (error) {
@@ -63,22 +57,26 @@ router.put("/kanban/move-to-doing/:id", async (req, res) => {
 });
 
 
-// MOVE a task from 'doing' to 'done'
 router.put("/kanban/move-to-done/:id", async (req, res) => {
     try {
         const task = await Doing.findByIdAndDelete(req.params.id);
         if (!task) return res.status(404).json({ message: "Task not found in Doing list" });
+        const completedAt = new Date(); 
 
-        const taskInDone = new Done({ ...task.toObject(), status: "done" }); // Set status explicitly
+        const taskInDone = new Done({
+            ...task.toObject(),
+            status: "done", 
+            completed_at: completedAt, 
+        });
+
         await taskInDone.save();
+
         res.status(200).json({ message: "Task moved to Done", task: taskInDone });
     } catch (error) {
         res.status(400).json({ message: "Error moving task", error });
     }
 });
 
-
-// DELETE a task from 'done' list
 router.delete("/kanban/done/:id", async (req, res) => {
     try {
         const task = await Done.findByIdAndDelete(req.params.id);
