@@ -30,7 +30,7 @@ router.post("/kanban/todo", async (req, res) => {
         title,
         description,
         assignedTo,
-        assigned_id,  
+        // assigned_id,  
         deadline,
         status,
     });
