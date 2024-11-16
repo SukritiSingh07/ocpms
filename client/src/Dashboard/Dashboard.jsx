@@ -15,7 +15,8 @@ const Dashboard = () => {
   const user = location.state?.user.user;
   const [organisations, setOrganisations] = useState([]); 
   console.log(user);
-
+  const [project, setProject] = useState([]);
+  console.log(project);
 
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
@@ -61,7 +62,7 @@ const Dashboard = () => {
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }} >
       <Navbar />
       <Box sx={{ display: "flex", flexGrow: 1, marginTop: "64px", position: "relative" }}>
-        <Sidebar user={user} organisations={organisations}/>
+        <Sidebar user={user} organisations={organisations} setProject={setProject}/>
 
         <Box
           sx={{
@@ -94,7 +95,7 @@ const Dashboard = () => {
             </TabPanel>
       </Box>
         </Box>
-        {isRightSidebarOpen && <RightSidebar organisations={organisations}/>}
+        {isRightSidebarOpen && <RightSidebar project={project}/>}
       </Box>
     </Box>
   );

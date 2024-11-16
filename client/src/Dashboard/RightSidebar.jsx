@@ -1,28 +1,8 @@
 import React from "react";
 import { Box, List, ListItem, ListItemText, Avatar } from "@mui/material";
 
-const RightSidebar = (props) => {
-  const organisations = props.organisations; 
-
-  const members = [];  
-
-  if (organisations && organisations.length > 0) {
-    organisations.forEach((organisation) => {
-      if (organisation.projects && organisation.projects.length > 0) {
-        organisation.projects.forEach((project) => {
-          if (project.member_id && project.member_id.length > 0) {
-            project.member_id.forEach((memberObj) => {
-              
-              members.push({
-                username: memberObj.member.username, 
-                role: memberObj.role,                 
-              });
-            });
-          }
-        });
-      }
-    });
-  }
+const RightSidebar = ({ project }) => {
+  const members = project?.member_id || []; // Get members from the selected project
 
   function stringToColor(string) {
     let hash = 0;
@@ -32,7 +12,7 @@ const RightSidebar = (props) => {
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
 
-    let color = '#';
+    let color = "#";
     for (i = 0; i < 3; i += 1) {
       const value = (hash >> (i * 8)) & 0xff;
       color += `00${value.toString(16)}`.slice(-2);
@@ -41,13 +21,11 @@ const RightSidebar = (props) => {
     return color;
   }
 
-
   function stringAvatar(name) {
+    const nameParts = name ? name.split(" ") : [];
+    const firstNameInitial = nameParts[0] ? nameParts[0][0] : "";  
+    const lastNameInitial = nameParts[1] ? nameParts[1][0] : "";   
 
-    const nameParts = name ? name.split(' ') : [];
-    const firstNameInitial = nameParts[0] ? nameParts[0][0] : '';  
-    const lastNameInitial = nameParts[1] ? nameParts[1][0] : '';   
-  
     return {
       sx: {
         bgcolor: stringToColor(name),
@@ -56,7 +34,6 @@ const RightSidebar = (props) => {
       children: `${firstNameInitial}${lastNameInitial}`, 
     };
   }
-  
 
   return (
     <Box
@@ -70,15 +47,21 @@ const RightSidebar = (props) => {
     >
       <Box>
         <List>
-          {members.map((member, index) => (
-            <ListItem key={index}>
-              <Avatar {...stringAvatar(member.username)} />
-              <ListItemText
-                primary={member.username} 
-                secondary={member.role}   
-              />
+          {members.length > 0 ? (
+            members.map((memberObj, index) => (
+              <ListItem key={index}>
+                <Avatar {...stringAvatar(memberObj.member.username)} />
+                <ListItemText
+                  primary={memberObj.member.username} // Member name
+                  secondary={memberObj.role}        // Member role
+                />
+              </ListItem>
+            ))
+          ) : (
+            <ListItem>
+              <ListItemText primary="No members in this project" />
             </ListItem>
-          ))}
+          )}
         </List>
       </Box>
     </Box>
