@@ -30,7 +30,7 @@
         const response = await fetch(url, {
           method: 'POST',
           credentials: 'include',
-          headers: {
+          headers: { 
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(form), // Submit both orgName and projectName together
