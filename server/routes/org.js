@@ -42,11 +42,16 @@ router.post("/createorg", async (req, res) => {
 
         // Step 2: Use the Project ID to create Chat, Kanban, Analytics
         const chat = await Chat.create({ projectId: newProject._id, messages: [] });
+        const todoList = await Todo.create([]);
+        const doingList = await Todo.create([]);
+        const doneList = await Todo.create([]);
+
+        // Step 3: Create Kanban with references to Todo, Doing, Done
         const kanban = await Kanban.create({
             projectId: newProject._id,
-            todo: [],
-            doing: [],
-            done: [],
+            todo: [todoList._id],
+            doing: [doingList._id],
+            done: [doneList._id],
         });
         const analytics = await Analytics.create({ projectId: newProject._id, metrics: {} });
 

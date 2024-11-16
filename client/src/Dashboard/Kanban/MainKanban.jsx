@@ -5,7 +5,7 @@ import Todo from './Todo';
 import Doing from './Doing';
 import Done from './Done';
 
-const MainKanban = () => {
+const MainKanban = ({kanbanId}) => {
     const [tasks, setTasks] = useState({ todos: [], doings: [], dones: [] });
 
     useEffect(() => {
@@ -14,7 +14,7 @@ const MainKanban = () => {
 
     const fetchTasks = async () => {
         try {
-            const response = await fetch('http://localhost:5000/dashboard/kanban');
+            const response = await fetch(`http://localhost:5000/dashboard/kanban/${kanbanId}`);
             const data = await response.json();
             console.log(data);
             setTasks(data);
