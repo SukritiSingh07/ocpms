@@ -84,7 +84,7 @@ const Dashboard = () => {
           transition: "margin-right 0.3s ease",
         }}>
         <TabPanel value={selectedTab} index={0}>
-              <MainKanban /> 
+              <MainKanban organisations={organisations}/> 
             </TabPanel>
             <TabPanel value={selectedTab} index={1}>
               <Analytics />

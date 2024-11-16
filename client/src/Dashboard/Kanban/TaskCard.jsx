@@ -20,12 +20,14 @@ const formatTime = (date) => {
 };
 
 
-const TaskCardComponent = ({ task, moveTaskToNextList, delTask }) => {
+const TaskCardComponent = ({ task, moveTaskToNextList, delTask, organisations }) => {
     const formattedDeadline = formatTime(task.deadline);
     const formattedCompletedTime = task.completed_at ? formatTime(task.completed_at) : null;
     const wasCompletedOnTime = new Date(task.completed_at) <= new Date(task.deadline);
     const completionStatus = wasCompletedOnTime ? "On Time" : "Late";
     const completionColor = wasCompletedOnTime ? "success" : "error";
+
+
 
     return (
         <TaskCard>
@@ -50,7 +52,7 @@ const TaskCardComponent = ({ task, moveTaskToNextList, delTask }) => {
 
             <Box mt={3} display="flex" justifyContent="space-between">
                 <Stack direction="row" spacing={1} alignItems="center">
-                    <Tooltip title={task.assignedTo || "Unassigned"} arrow>
+                    <Tooltip title={task.assignedToName || "Unassigned"} arrow>
                         <PersonIcon color="action" style={{ cursor: 'pointer' }} />
                     </Tooltip>
                     <Typography variant="body2">

@@ -1,24 +1,58 @@
 import React, { useState } from 'react';
 import { TaskCreateCard } from './KanbanStyles';
 import { Typography, TextField, Button, Box } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
 
-const CreateTask = ({ addTask }) => {
+const CreateTask = ({ addTask, organisations }) => {
     const [taskDetails, setTaskDetails] = useState({
         title: '',
         description: '',
         assignedTo: '',
+        assignedId: '',
         timer: ''
     });
+    const members = [];  
+
+    // Extract members from organisations
+    if (organisations && organisations.length > 0) {
+        organisations.forEach((organisation) => {
+            if (organisation.projects && organisation.projects.length > 0) {
+                organisation.projects.forEach((project) => {
+                    if (project.member_id && project.member_id.length > 0) {
+                        project.member_id.forEach((memberObj) => {
+                            members.push({
+                                username: memberObj.member.username, 
+                                role: memberObj.role,    
+                                memberId:  memberObj.member._id,             
+                            });
+                        });
+                    }
+                });
+            }
+        });
+    }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setTaskDetails({ ...taskDetails, [name]: value });
     };
 
+    const handleSelectChange = (event) => {
+        const selectedMember = members.find(member => member.memberId === event.target.value);
+        setTaskDetails({ 
+            ...taskDetails, 
+            assignedTo: selectedMember.username,
+            assignedId: selectedMember.memberId 
+        });
+    };
+
     const handleAddTask = () => {
         if (taskDetails.title && taskDetails.description && taskDetails.assignedTo && taskDetails.timer) {
             addTask(taskDetails); 
-            setTaskDetails({ title: '', description: '', assignedTo: '', timer: '' }); 
+            setTaskDetails({ title: '', description: '', assignedTo: '', assignedId: '', timer: '' }); 
         } else {
             console.log("Please fill all fields!");
         }
@@ -49,15 +83,25 @@ const CreateTask = ({ addTask }) => {
                 rows={3}
                 margin="normal"
             />
-            <TextField
-                label="Assigned To"
-                variant="outlined"
-                name="assignedTo"
-                value={taskDetails.assignedTo}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-            />
+            <Box sx={{ minWidth: 120 }}>
+                <FormControl fullWidth>
+                    <InputLabel id="member-select-label">Assign To</InputLabel>
+                    <Select
+                        labelId="member-select-label"
+                        id="member-select"
+                        value={taskDetails.assignedId}
+                        label="Assign To"
+                        onChange={handleSelectChange}
+                        name="assignedTo"
+                    >
+                        {members.map((member) => (
+                            <MenuItem key={member.memberId} value={member.memberId}>
+                                {member.username}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Box>
             <TextField
                 label="Timer (minutes)"
                 variant="outlined"

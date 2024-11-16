@@ -5,7 +5,7 @@ import Todo from './Todo';
 import Doing from './Doing';
 import Done from './Done';
 
-const MainKanban = ({kanbanId}) => {
+const MainKanban = ({kanbanId, organisations}) => {
     const [tasks, setTasks] = useState({ todos: [], doings: [], dones: [] });
 
     useEffect(() => {
@@ -14,7 +14,7 @@ const MainKanban = ({kanbanId}) => {
 
     const fetchTasks = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/dashboard/kanban/${kanbanId}`);
+            const response = await fetch(`http://localhost:5000/dashboard/kanban/`);
             const data = await response.json();
             console.log(data);
             setTasks(data);
@@ -24,6 +24,7 @@ const MainKanban = ({kanbanId}) => {
     };
 
     const addTask = async (newTask) => {
+        console.log(newTask);
         try {
             const taskWithStatus = {
                 ...newTask,
@@ -132,7 +133,7 @@ const MainKanban = ({kanbanId}) => {
         <KanbanArea>
             <Grid container spacing={2}>
                 <Grid item xs={4}>
-                    <Todo tasks={tasks.todos}  moveTaskToNextList={moveTaskToNextList} addTask={addTask} />
+                    <Todo tasks={tasks.todos}  moveTaskToNextList={moveTaskToNextList} addTask={addTask} organisations={organisations}/>
                 </Grid>
                 <Grid item xs={4}>
                     <Doing tasks={tasks.doings} moveTaskToNextList={moveTaskToNextList} />
