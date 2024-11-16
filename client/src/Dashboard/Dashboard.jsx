@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
+import Switchbar from "./Switchbar";
 import RightSidebar from "./RightSidebar";
 import { Box } from "@mui/material";
 import MiniNav from "./MiniNav";
@@ -9,14 +9,21 @@ import MainChat from "./Chat/MainChat";
 import TabPanel from "./Tabpanel";
 import { useLocation } from 'react-router-dom';
 import Analytics from "./Analytics/Analytics";
+import Sidebar from "./Sidebar";
+import { motion } from 'framer-motion';
 
 const Dashboard = () => {
   const location = useLocation();
   const user = location.state?.user.user;
-  const [organisations, setOrganisations] = useState([]); 
+  const [organisations, setOrganisations] = useState([]);
   console.log(user);
-  const [project, setProject] = useState([]);
-  console.log(project);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedorg, setSelectedOrg] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [proj, setProj]=useState([]);
+  console.log(selectedorg);
+  console.log(projects);
+  console.log(proj);
 
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
@@ -30,39 +37,54 @@ const Dashboard = () => {
     setSelectedTab(newValue);
   };
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchOrganisations = async () => {
       try {
         const response = await fetch(`http://localhost:5000/dashboard/${user._id}`, {
-          method: 'GET', 
+          method: 'GET',
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-  
+
         const data = await response.json();
-        console.log("Fetched data:", data); 
-        setOrganisations(data.organisations); 
+        console.log("Fetched data:", data);
+        setOrganisations(data.organisations);
       } catch (error) {
         console.error("Error fetching user organizations:", error);
       }
     };
-  
+
     if (user._id) {
       fetchOrganisations();
     }
   }, [user._id]);
 
+  const onToggle = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  }
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }} >
-      <Navbar />
-      <Box sx={{ display: "flex", flexGrow: 1, marginTop: "64px", position: "relative" }}>
-        <Sidebar user={user} organisations={organisations} setProject={setProject}/>
+      <Navbar onToggle={onToggle} selectedorg={selectedorg}/>
+      <Box sx={{ display: 'flex', flexGrow: 1, marginTop: '64px', position: 'relative' }}>
+        <motion.div
+          initial={{ x: isSidebarOpen ? 0 : -250 }} // Set initial position based on the state
+          animate={{ x: isSidebarOpen ? 0 : -250 }} // Slide in/out based on isSidebarOpen
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          style={{ position: 'absolute', zIndex: 10 }}
+        >
+          {/* Render Sidebar or Switchbar based on isSidebarOpen */}
+          {isSidebarOpen && (
+            <Switchbar user={user} organisations={organisations} setSelectedOrg={setSelectedOrg} setProjects={setProjects} setIsSidebarOpen={setIsSidebarOpen}/>
+          )}
+        </motion.div>
+        <Sidebar user={user} projects={projects} setProj={setProj} selectedorg={selectedorg}/>
 
         <Box
           sx={{
@@ -77,25 +99,25 @@ const Dashboard = () => {
             isRightSidebarOpen={isRightSidebarOpen}
             onTabChange={handleTabChange}
           />
-          <Box sx={{ 
-          flexGrow: 1, 
-          padding: 2, 
-          marginRight: isRightSidebarOpen ? 63 : 30, 
-          marginTop: 3,
-          transition: "margin-right 0.3s ease",
-        }}>
-        <TabPanel value={selectedTab} index={0}>
-              <MainKanban organisations={organisations}/> 
+          <Box sx={{
+            flexGrow: 1,
+            padding: 2,
+            marginRight: isRightSidebarOpen ? 63 : 30,
+            marginTop: 3,
+            transition: "margin-right 0.3s ease",
+          }}>
+            <TabPanel value={selectedTab} index={0}>
+              <MainKanban organisations={organisations} />
             </TabPanel>
             <TabPanel value={selectedTab} index={1}>
               <Analytics />
             </TabPanel>
             <TabPanel value={selectedTab} index={2}>
-              <MainChat projectId={user._id} userId={user._id} userName={user.username}/>
+              <MainChat projectId={user._id} userId={user._id} userName={user.username} />
             </TabPanel>
-      </Box>
+          </Box>
         </Box>
-        {isRightSidebarOpen && <RightSidebar project={project}/>}
+        {isRightSidebarOpen && <RightSidebar projects={proj}/>}
       </Box>
     </Box>
   );

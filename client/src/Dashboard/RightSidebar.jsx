@@ -1,9 +1,9 @@
 import React from "react";
 import { Box, List, ListItem, ListItemText, Avatar } from "@mui/material";
 
-const RightSidebar = ({ project }) => {
-  const members = project?.member_id || []; // Get members from the selected project
-
+const RightSidebar = ({ projects }) => {
+  const members = projects?.member_id || []; 
+  
   function stringToColor(string) {
     let hash = 0;
     let i;

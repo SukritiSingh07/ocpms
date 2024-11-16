@@ -1,100 +1,70 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Box,
   List,
   ListItemButton,
   ListItemText,
   ListItemIcon,
-  Collapse,
-  Button,
-  Modal,
   Typography,
+  IconButton,
 } from '@mui/material';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import BusinessIcon from '@mui/icons-material/Business';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import Join from './join';
-import Create from './create';
+import AddIcon from '@mui/icons-material/Add';  // Import Add Icon
 
-const Sidebar = (props) => {
-  const [open, setOpen] = useState(false);
-  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const organisations=props.organisations;
-  
-  const handleProjectClick = (project) => {
-    props.setProject(project); // Update the project state in the parent
-  };
-
-  const user = props.user;
-  
-  const handleToggle = (orgId) => {
-    setOpen(open === orgId ? null : orgId); // Toggle the organization view
-  };
-
-  const handleJoinOpen = () => setIsJoinModalOpen(true);
-  const handleJoinClose = () => setIsJoinModalOpen(false);
-
-  const handleCreateOpen = () => setIsCreateModalOpen(true);
-  const handleCreateClose = () => setIsCreateModalOpen(false);
+function Sidebar(props) {
+  const { projects, setProj, onAddProject, selectedorg } = props;  // Destructure props, including onAddProject callback
 
   return (
-    <Box sx={{ width: 250, background: '#3a6ea5', height: "calc(100vh - 64px)", position: 'fixed', display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+    <Box
+      sx={{
+        width: 250,
+        background: "#3a6ea5",
+        height: "calc(100vh - 64px)",
+        position: "fixed",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",  // This ensures content is spaced properly
+        overflowY: "auto", // Add scrolling for long content
+      }}
+    >
       <List>
-        {/* Loop through organisations and display them */}
-        {organisations.length > 0 ? (
-          organisations.map((org) => (
-            <div key={org._id}>
-              {/* Organization name */}
-              <ListItemButton onClick={() => handleToggle(org._id)}>
+        {projects && projects.length > 0 ? (
+          projects.map((proj) => (
+            <div key={proj._id}>
+              <ListItemButton sx={{ pl: 4 }} onClick={() => setProj(proj)}>
+                <ListItemText primary={proj.projectName} />
                 <ListItemIcon>
-                  <BusinessIcon />
+                  <ArrowForwardIosIcon />
                 </ListItemIcon>
-                <ListItemText primary={org.name} />
-                {open === org._id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </ListItemButton>
-
-              {/* Collapse to show projects for each organization */}
-              <Collapse in={open === org._id} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  {org.projects && org.projects.length > 0 ? (
-                    org.projects.map((project) => (
-                      <ListItemButton key={project._id} sx={{ pl: 4 }} onClick={() => handleProjectClick(project)}>
-                        <ListItemIcon>
-                          <ArrowForwardIosIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={project.projectName}/>
-                      </ListItemButton>
-                    ))
-                  ) : (
-                    <ListItemText sx={{ pl: 4 }} primary="No projects available" />
-                  )}
-                </List>
-              </Collapse>
             </div>
           ))
         ) : (
-          <Typography variant="body2" color="white">No organizations found</Typography>
+          <Typography sx={{ color: "white", padding: "16px", textAlign: "center" }}>
+            No projects found
+          </Typography>
         )}
       </List>
 
-      <Box style={{ display: "flex", justifyContent: "space-evenly" }}>
-        <Button onClick={handleJoinOpen} style={{ color: "black" }}>Join</Button>
-        <Button onClick={handleCreateOpen} style={{ color: "black" }}>Create</Button>
+      {/* Add Project Button at the bottom corner of the sidebar */}
+      <Box sx={{ marginTop: 'auto', padding: '16px', display: 'flex', justifyContent: 'center' }}>
+        <IconButton
+          sx={{
+            backgroundColor: "#024CAA",
+            color: "white",
+            borderRadius: "50%",
+            padding: "8px",
+            '&:hover': {
+              backgroundColor: "#7AB2D3",
+            }
+          }}
+          onClick={onAddProject}
+        >
+          <AddIcon />
+        </IconButton>
       </Box>
-
-      {/* Join Modal */}
-      <Modal open={isJoinModalOpen} onClose={handleJoinClose}>
-        <Join user={props.user} />
-      </Modal>
-
-      {/* Create Modal */}
-      <Modal open={isCreateModalOpen} onClose={handleCreateClose}>
-        <Create user={props.user} />
-      </Modal>
     </Box>
   );
-};
+}
 
 export default Sidebar;
