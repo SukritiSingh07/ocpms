@@ -6,7 +6,6 @@ const Chat = require('../models/organisation/project/chat/chat.model');
 const Kanban = require('../models/organisation/project/kanban/kanban.model');
 const Analytics = require('../models/organisation/project/analytics/analytics.model');
 const User = require('../models/user.js');
-
 function generateUniqueId(baseName) {
     const randomSuffix = Array.from({ length: 5 }, () =>
         String.fromCharCode(Math.floor(Math.random() * 26) + (Math.random() < 0.5 ? 65 : 97))
@@ -34,9 +33,9 @@ router.post("/createorg", async (req, res) => {
             description: projectdesc,
             projectID,
             organisation: null,
-            member_id: [{
-                member: user._id, role: "Admin"
-            }]
+            // member_id: [{
+            //     member: user._id, role: "Admin"
+            // }]
         });
         await newProject.save();
 
@@ -93,35 +92,47 @@ router.post("/joinorg", async (req, res) => {
     const { user, orgCode, projCode } = req.body;
 
     try {
-
+        console.log("Request Body:", req.body);
         const organisation = await Organisation.findOne({ orgID: orgCode });
         if (!organisation) {
+            console.log("Organisation not found");
             return res.status(404).json({ error: "Organisation not found" });
         }
 
-        const project = await Project.findOne({ projectID: projCode, organisation: organisation._id });
+        const project = await Project.findOne({ projectID: projCode });
         if (!project) {
+            console.log("Project not found");
             return res.status(404).json({ error: "Project not found" });
         }
-        project.member_id.push({member: user._id, role: "member"});
 
+        const isMember = project.member_id.some(member => member.member.toString() === user._id);
+        if (isMember) {
+            return res.status(400).json({ error: "User is already a member of this project" });
+        }
+        organisation.orgUser_id.push({user: user._id, role: "member"});
+
+        project.member_id.push({ member: user._id, role: "member" });
         await project.save();
-        user.organisations.push(organisation._id);
-        await user.save();
 
-        const updatedProject = await Project.findOne({ projectID: projCode })
-            .populate("member_id", "username email"); // Populate to return full user details
+        const foundUser = await User.findOne({ _id: user._id });
+        if (!foundUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        foundUser.organisations.push(organisation._id);
+        await foundUser.save();
 
         res.status(200).json({
             message: "User added to the project successfully",
-            project: updatedProject,
-            members: updatedProject.member_id // Return full list of users
+            project: project,
+            members: project.member_id 
         });
     } catch (error) {
-        console.error(error);
+        console.error("Error:", error);
         res.status(500).json({ error: "Error adding user to project" });
     }
 });
+
 
 
 module.exports = router;
