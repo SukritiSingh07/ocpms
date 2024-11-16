@@ -23,6 +23,10 @@ const Sidebar = (props) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const organisations=props.organisations;
   
+  const handleProjectClick = (project) => {
+    props.setProject(project); // Update the project state in the parent
+  };
+
   const user = props.user;
   
   const handleToggle = (orgId) => {
@@ -56,11 +60,11 @@ const Sidebar = (props) => {
                 <List component="div" disablePadding>
                   {org.projects && org.projects.length > 0 ? (
                     org.projects.map((project) => (
-                      <ListItemButton key={project._id} sx={{ pl: 4 }}>
+                      <ListItemButton key={project._id} sx={{ pl: 4 }} onClick={() => handleProjectClick(project)}>
                         <ListItemIcon>
                           <ArrowForwardIosIcon />
                         </ListItemIcon>
-                        <ListItemText primary={project.projectName} />
+                        <ListItemText primary={project.projectName}/>
                       </ListItemButton>
                     ))
                   ) : (

@@ -33,9 +33,6 @@ router.post("/createorg", async (req, res) => {
             description: projectdesc,
             projectID,
             organisation: null,
-            // member_id: [{
-            //     member: user._id, role: "Admin"
-            // }]
         });
         await newProject.save();
 

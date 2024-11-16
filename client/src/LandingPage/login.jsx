@@ -81,9 +81,12 @@ function Login() {
             if (data.success) {
                 navigate('/dashboard', { state: { user: data} });
             }
+            else{
+                alert(data.message);
+            }
     
         } catch (error) {
-            console.error("Fetch error:", error.message);
+            console.error("Fetch error:", error);
         }
     };
 

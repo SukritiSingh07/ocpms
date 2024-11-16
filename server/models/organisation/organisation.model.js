@@ -5,12 +5,6 @@ const organisationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  orgUser_id: [
-    {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-      role: { type: String, required: true }, // Example: 'Admin', 'Member'
-    },
-  ],
   orgID: {
     type: String,
     unique: true,

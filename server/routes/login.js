@@ -10,6 +10,16 @@ router.post('/signup', async (req, res) => {
 
     // Hash the password
     const hashedPassword = hashSync(password, 10);
+    const existingUser = await User.findOne({ username: username });
+    const existingmail=await User.findOne({email: Email});
+        if (existingUser) {
+            // console.log("username already exists");
+            return res.json({ success: false, message: 'Username already exists' });
+        }
+        if(existingmail){
+            // console.log("email already exists");
+            return res.json({success: false, message: 'Email already exists'})
+        }
 
     const user = new User({
         username: username,
