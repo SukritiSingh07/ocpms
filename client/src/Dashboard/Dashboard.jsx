@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
@@ -13,7 +13,9 @@ import Analytics from "./Analytics/Analytics";
 const Dashboard = () => {
   const location = useLocation();
   const user = location.state?.user.user;
+  const [organisations, setOrganisations] = useState([]); 
   console.log(user);
+
 
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
@@ -26,6 +28,34 @@ const Dashboard = () => {
   const handleTabChange = (newValue) => {
     setSelectedTab(newValue);
   };
+
+    useEffect(() => {
+    const fetchOrganisations = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/dashboard/${user._id}`, {
+          method: 'GET', 
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        console.log("Fetched data:", data); 
+        setOrganisations(data.organisations); 
+      } catch (error) {
+        console.error("Error fetching user organizations:", error);
+      }
+    };
+  
+    if (user._id) {
+      fetchOrganisations();
+    }
+  }, [user._id]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }} >

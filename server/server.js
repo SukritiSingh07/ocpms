@@ -10,6 +10,7 @@ const passport = require("passport");
 const http = require('http');
 const { Server } = require('socket.io');
 const org=require('./routes/org');
+// const dashboard=require('./routes/dashboard');
 
 const app = express();
 const port = 5000;
@@ -97,6 +98,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/ocmps", { useNewUrlParser: true, use
 app.use("/", login);
 app.use("/dashboard", kanban);
 app.use('/dashboard', chat);
+// app.use('/dashboard', dashboard);
 app.use('/org', org);
 
 // Start the server

@@ -8,7 +8,7 @@ const Analytics = require('../models/organisation/project/analytics/analytics.mo
 
 
 function generateUniqueId(baseName) {
-    const randomSuffix = Array.from({ length: 5 }, () => 
+    const randomSuffix = Array.from({ length: 5 }, () =>
         String.fromCharCode(Math.floor(Math.random() * 26) + (Math.random() < 0.5 ? 65 : 97))
     ).join('');
     return `${baseName}_${randomSuffix}`;
@@ -16,16 +16,16 @@ function generateUniqueId(baseName) {
 
 
 router.post("/createorg", async (req, res) => {
-    const { orgName, projectName, projectdesc, user } = req.body; 
+    const { orgName, projectName, projectdesc, user } = req.body;
     try {
         let orgID = generateUniqueId(orgName);
-        let projectID = generateUniqueId(projectName);
+        let projectID = generateUniqueId(orgName);
 
         // Unique Project ID Generation Check
         let existingProject = await Project.findOne({ projectID });
         while (existingProject) {
-            projectID = generateUniqueId(projectName); 
-            existingProject = await Project.findOne({ projectID }); 
+            projectID = generateUniqueId(orgName);
+            existingProject = await Project.findOne({ projectID });
         }
 
         // Step 1: Create the Project Document first
@@ -58,6 +58,7 @@ router.post("/createorg", async (req, res) => {
         const newOrganisation = new Organisation({
             name: orgName,
             orgAdmin_id: user._id,
+            orgAdmin_id: user._id,
             orgID,
             projects: [newProject._id]
         });
@@ -65,6 +66,17 @@ router.post("/createorg", async (req, res) => {
 
         newProject.organisation = newOrganisation._id;
         await newProject.save();
+
+        const userDoc = await User.findById(user._id);
+        if (!userDoc) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        if (!userDoc.organisations) {
+            userDoc.organisations = [];
+        }
+        userDoc.organisations.push(newOrganisation._id);
+        await userDoc.save();
+
 
         res.status(201).json({
             message: "Organisation and Project created successfully",

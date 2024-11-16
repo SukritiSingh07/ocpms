@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   List,
@@ -8,6 +8,7 @@ import {
   Collapse,
   Button,
   Modal,
+  Typography,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -20,9 +21,11 @@ const Sidebar = (props) => {
   const [open, setOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
-  const handleToggle = () => {
-    setOpen(!open);
+  
+  const user = props.user;
+  
+  const handleToggle = (orgId) => {
+    setOpen(open === orgId ? null : orgId); // Toggle the organization view
   };
 
   const handleJoinOpen = () => setIsJoinModalOpen(true);
@@ -32,41 +35,45 @@ const Sidebar = (props) => {
   const handleCreateClose = () => setIsCreateModalOpen(false);
 
   return (
-    <Box sx={{ width: 250, background: '#3a6ea5', height: "calc(100vh - 64px)", position: 'fixed', display:"flex", flexDirection: "column", justifyContent: "space-between" }}>
+    <Box sx={{ width: 250, background: '#3a6ea5', height: "calc(100vh - 64px)", position: 'fixed', display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
       <List>
-        <ListItemButton onClick={handleToggle}>
-          <ListItemIcon>
-            <BusinessIcon />
-          </ListItemIcon>
-          <ListItemText primary="Organization" />
-          {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </ListItemButton>
+        {/* Loop through organisations and display them */}
+        {organisations.length > 0 ? (
+          organisations.map((org) => (
+            <div key={org._id}>
+              {/* Organization name */}
+              <ListItemButton onClick={() => handleToggle(org._id)}>
+                <ListItemIcon>
+                  <BusinessIcon />
+                </ListItemIcon>
+                <ListItemText primary={org.name} />
+                {open === org._id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </ListItemButton>
 
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <ArrowForwardIosIcon />
-              </ListItemIcon>
-              <ListItemText primary="Project 1" />
-            </ListItemButton>
-
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <ArrowForwardIosIcon />
-              </ListItemIcon>
-              <ListItemText primary="Project 2" />
-            </ListItemButton>
-
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <ArrowForwardIosIcon />
-              </ListItemIcon>
-              <ListItemText primary="Project 3" />
-            </ListItemButton>
-          </List>
-        </Collapse>
+              {/* Collapse to show projects for each organization */}
+              <Collapse in={open === org._id} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {org.projects && org.projects.length > 0 ? (
+                    org.projects.map((project) => (
+                      <ListItemButton key={project._id} sx={{ pl: 4 }}>
+                        <ListItemIcon>
+                          <ArrowForwardIosIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={project.projectName} />
+                      </ListItemButton>
+                    ))
+                  ) : (
+                    <ListItemText sx={{ pl: 4 }} primary="No projects available" />
+                  )}
+                </List>
+              </Collapse>
+            </div>
+          ))
+        ) : (
+          <Typography variant="body2" color="white">No organizations found</Typography>
+        )}
       </List>
+
       <Box style={{ display: "flex", justifyContent: "space-evenly" }}>
         <Button onClick={handleJoinOpen} style={{ color: "black" }}>Join</Button>
         <Button onClick={handleCreateOpen} style={{ color: "black" }}>Create</Button>
@@ -79,7 +86,7 @@ const Sidebar = (props) => {
 
       {/* Create Modal */}
       <Modal open={isCreateModalOpen} onClose={handleCreateClose}>
-        <Create user={props.user}/>
+        <Create user={props.user} />
       </Modal>
     </Box>
   );
