@@ -21,6 +21,7 @@ const Sidebar = (props) => {
   const [open, setOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const organisations=props.organisations;
   
   const user = props.user;
   

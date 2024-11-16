@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const Organisation = require("../models/organisation/organisation.model");
-const Project = require("../models/organisation/project.model.js"); 
+const Project = require("../models/organisation/project.model.js");
 const Chat = require('../models/organisation/project/chat/chat.model');
 const Kanban = require('../models/organisation/project/kanban/kanban.model');
 const Analytics = require('../models/organisation/project/analytics/analytics.model');
-
+const User = require('../models/user.js');
 
 function generateUniqueId(baseName) {
     const randomSuffix = Array.from({ length: 5 }, () =>
@@ -33,8 +33,10 @@ router.post("/createorg", async (req, res) => {
             projectName,
             description: projectdesc,
             projectID,
-            organisation: null, 
-            member_id: [user._id]
+            organisation: null,
+            member_id: [{
+                member: user._id, role: "Admin"
+            }]
         });
         await newProject.save();
 
@@ -57,15 +59,13 @@ router.post("/createorg", async (req, res) => {
         // Step 4: Create Organisation and Link Project
         const newOrganisation = new Organisation({
             name: orgName,
-            orgAdmin_id: user._id,
-            orgAdmin_id: user._id,
+            orgUser_id: [
+                { user: user._id, role: "Admin" }, // Adjusted to match the schema structure
+            ],
             orgID,
             projects: [newProject._id]
         });
         await newOrganisation.save();
-
-        newProject.organisation = newOrganisation._id;
-        await newProject.save();
 
         const userDoc = await User.findById(user._id);
         if (!userDoc) {
@@ -103,20 +103,20 @@ router.post("/joinorg", async (req, res) => {
         if (!project) {
             return res.status(404).json({ error: "Project not found" });
         }
-        project.member_id.push(user); 
-         
+        project.member_id.push({member: user._id, role: "member"});
+
         await project.save();
         user.organisations.push(organisation._id);
         await user.save();
 
         const updatedProject = await Project.findOne({ projectID: projCode })
-        .populate("member_id", "username email"); // Populate to return full user details
+            .populate("member_id", "username email"); // Populate to return full user details
 
-    res.status(200).json({
-        message: "User added to the project successfully",
-        project: updatedProject,
-        members: updatedProject.member_id // Return full list of users
-    });
+        res.status(200).json({
+            message: "User added to the project successfully",
+            project: updatedProject,
+            members: updatedProject.member_id // Return full list of users
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error adding user to project" });

@@ -1,30 +1,31 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const organisationSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
-  },
-  orgAdmin_id: {  
-    type: mongoose.Schema.Types.ObjectId, 
     required: true,
-    ref: "admin"
   },
+  orgUser_id: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+      role: { type: String, required: true }, // Example: 'Admin', 'Member'
+    },
+  ],
   orgID: {
     type: String,
     unique: true,
-    required: true
+    required: true,
   },
   projects: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Project"
-    }
-  ]
+      ref: "Project",
+    },
+  ],
 });
 
 // Create the model from the schema
-const Organisation = mongoose.model('Organisation', organisationSchema);
+const Organisation = mongoose.model("Organisation", organisationSchema);
 
 // Export the model
 module.exports = Organisation;

@@ -61,7 +61,7 @@ const Dashboard = () => {
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }} >
       <Navbar />
       <Box sx={{ display: "flex", flexGrow: 1, marginTop: "64px", position: "relative" }}>
-        <Sidebar user={user}/>
+        <Sidebar user={user} organisations={organisations}/>
 
         <Box
           sx={{
@@ -94,7 +94,7 @@ const Dashboard = () => {
             </TabPanel>
       </Box>
         </Box>
-        {isRightSidebarOpen && <RightSidebar />}
+        {isRightSidebarOpen && <RightSidebar organisations={organisations}/>}
       </Box>
     </Box>
   );
