@@ -36,6 +36,7 @@ const Dashboard = () => {
   // Retrieve selected project from localStorage
   const [proj, setProj] = useState(() => {
     const savedProj = localStorage.getItem("selectedProj");
+    console.log(savedProj);
     return savedProj ? JSON.parse(savedProj) : null;
   });
 
@@ -144,7 +145,7 @@ const Dashboard = () => {
             transition: "margin-right 0.3s ease",
           }}>
             <TabPanel value={selectedTab} index={0}>
-              <MainKanban organisations={organisations} kanbanId={proj.kanban_id}/>
+              <MainKanban organisations={organisations} />
             </TabPanel>
             <TabPanel value={selectedTab} index={1}>
               <Analytics />
