@@ -14,6 +14,10 @@ const doingSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Member",
     },
+    project_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+    },
 })
 
 const Doing = mongoose.model("Doing",doingSchema);

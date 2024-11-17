@@ -2,26 +2,13 @@ const express = require("express");
 const Todo = require("../models/organisation/project/kanban/todo.model");
 const Doing = require("../models/organisation/project/kanban/doing.model");
 const Done = require("../models/organisation/project/kanban/done.model");
-const Kanban = require("../models/organisation/project/kanban/kanban.model");
 const router = express.Router();
 
-// router.get("/kanban/:kanbanId", async (req, res) => {
-router.get("/kanban/", async (req, res) => {
-    // const { kanbanId } = req.params;
-    // console.log(kanbanId);
+router.get("/kanban/:projectId", async (req, res) => {
+    const { projectId } = req.params;
+    if(!projectId){return res.send([])};
+    console.log("projectid",projectId);
     try {
-        // const kanban = await Kanban.findById(kanbanId)
-        //     .populate('todo')
-        //     .populate('doing')
-        //     .populate('done');
-
-        // if (!kanban) return res.status(404).json({ message: "Kanban board not found" });
-
-        // res.status(200).json({
-        //     todos: kanban.todo,
-        //     doings: kanban.doing,
-        //     dones: kanban.done
-        // });
         const todos = await Todo.find();
         const doings = await Doing.find();
         const dones = await Done.find();
@@ -36,7 +23,8 @@ router.get("/kanban/", async (req, res) => {
     }
 });
 
-router.post("/kanban/todo", async (req, res) => {
+router.post("/kanban/todo/:projectId", async (req, res) => {
+    const {projectId} = req.params;
     const { title, description, assignedTo, assignedId, timer, status = "todo" } = req.body;
     
     const timerStart = new Date();
@@ -47,6 +35,7 @@ router.post("/kanban/todo", async (req, res) => {
         description,
         assignedToName: assignedTo,  // Adding assignedTo to the assignedToName field
         assigned_id: assignedId,     // Set assignedId in assigned_id field
+        project_id: projectId,
         deadline,
         status,
     });
@@ -54,6 +43,7 @@ router.post("/kanban/todo", async (req, res) => {
     try {
         const savedTask = await newTask.save();
         res.status(201).json(savedTask);
+        console.log(savedTask);
     } catch (error) {
         res.status(400).json({ message: "Error adding task", error });
     }

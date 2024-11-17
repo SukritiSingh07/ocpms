@@ -6,7 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 
-const CreateTask = ({ addTask, organisations }) => {
+const CreateTask = ({ addTask, organisations, selectedproj }) => {
     const [taskDetails, setTaskDetails] = useState({
         title: '',
         description: '',
@@ -14,26 +14,27 @@ const CreateTask = ({ addTask, organisations }) => {
         assignedId: '',
         timer: ''
     });
-    const members = [];  
+    const members = selectedproj?.member_id || [];  
+    console.log(members);
 
     // Extract members from organisations
-    if (organisations && organisations.length > 0) {
-        organisations.forEach((organisation) => {
-            if (organisation.projects && organisation.projects.length > 0) {
-                organisation.projects.forEach((project) => {
-                    if (project.member_id && project.member_id.length > 0) {
-                        project.member_id.forEach((memberObj) => {
-                            members.push({
-                                username: memberObj.member.username, 
-                                role: memberObj.role,    
-                                memberId:  memberObj.member._id,             
-                            });
-                        });
-                    }
-                });
-            }
-        });
-    }
+    // if (organisations && organisations.length > 0) {
+    //     organisations.forEach((organisation) => {
+    //         if (organisation.projects && organisation.projects.length > 0) {
+    //             organisation.projects.forEach((project) => {
+    //                 if (project.member_id && && project.member_id.length > 0) {
+    //                     project.member_id.forEach((memberObj) => {
+    //                         members.push({
+    //                             username: memberObj.member.username, 
+    //                             role: memberObj.role,    
+    //                             memberId:  memberObj.member._id,             
+    //                         });
+    //                     });
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -41,11 +42,11 @@ const CreateTask = ({ addTask, organisations }) => {
     };
 
     const handleSelectChange = (event) => {
-        const selectedMember = members.find(member => member.memberId === event.target.value);
+        const selectedMember = members.find(member => member.member._id === event.target.value);
         setTaskDetails({ 
             ...taskDetails, 
-            assignedTo: selectedMember.username,
-            assignedId: selectedMember.memberId 
+            assignedTo: selectedMember.member.username,
+            assignedId: selectedMember.member._id 
         });
     };
 
@@ -95,8 +96,8 @@ const CreateTask = ({ addTask, organisations }) => {
                         name="assignedTo"
                     >
                         {members.map((member) => (
-                            <MenuItem key={member.memberId} value={member.memberId}>
-                                {member.username}
+                            <MenuItem key={member.member._id} value={member.member._id}>
+                                {member.member.username}
                             </MenuItem>
                         ))}
                     </Select>

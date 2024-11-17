@@ -3,7 +3,6 @@ const router = express.Router();
 const Organisation = require("../models/organisation/organisation.model");
 const Project = require("../models/organisation/project.model.js");
 const Chat = require('../models/organisation/project/chat/chat.model');
-const Kanban = require('../models/organisation/project/kanban/kanban.model');
 const Analytics = require('../models/organisation/project/analytics/analytics.model');
 const Todo = require('../models/organisation/project/kanban/todo.model.js');
 const Doing = require('../models/organisation/project/kanban/doing.model.js');
@@ -45,13 +44,6 @@ router.post("/createorg", async (req, res) => {
         const doingList = await Doing.create([]);
         const doneList = await Done.create([]);
 
-        // Step 3: Create Kanban with references to Todo, Doing, Done
-        const kanban = await Kanban.create({
-            projectId: newProject._id,
-            todo: [todoList._id],
-            doing: [doingList._id],
-            done: [doneList._id],
-        });
         const analytics = await Analytics.create({ projectId: newProject._id, metrics: {} });
 
         // Step 3: Update the Project Document with created IDs

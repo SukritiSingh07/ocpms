@@ -13,6 +13,10 @@ const todoSchema = mongoose.Schema({
     assigned_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Member",
+    },    
+    project_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
     },
 });
 

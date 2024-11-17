@@ -61,8 +61,8 @@ app.use(passport.session());
 
 io.on('connection', (socket) => {
     // console.log('User connected');
-
     socket.on('joinRoom', ({ projectId }) => {
+        console.log(`User with socketId ${socket.id} joining room: ${projectId}`);
         socket.join(projectId);
         console.log(`User joined room: ${projectId}`);
     });
@@ -80,7 +80,6 @@ io.on('connection', (socket) => {
         }
     });
     
-
     socket.on('disconnect', () => {
         console.log('User disconnected');
     });

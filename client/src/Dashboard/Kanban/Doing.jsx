@@ -7,7 +7,7 @@ const Doing = ({ tasks, moveTaskToNextList, startTimer }) => {
     return (
         <TaskListArea>
             <Typography variant="h6" textAlign="center" mb={5}>In Progress</Typography>
-            {tasks.map((task, index) => (
+            {tasks?.map((task, index) => (
                 <TaskCardComponent 
                     key={index} 
                     task={task} 

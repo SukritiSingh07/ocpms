@@ -4,26 +4,39 @@ import { Grid } from '@mui/material';
 import Todo from './Todo';
 import Doing from './Doing';
 import Done from './Done';
+import { useForceUpdate } from 'framer-motion';
 
-const MainKanban = ({kanbanId, organisations}) => {
+const MainKanban = ({projectId, organisations, selectedproj, userId}) => {
     const [tasks, setTasks] = useState({ todos: [], doings: [], dones: [] });
-    console.log(kanbanId);
+    // console.log(kanbanId);
 
     useEffect(() => {
         fetchTasks();
     }, []);
 
-    const fetchTasks = async () => {
-        try {
-            // const response = await fetch(`http://localhost:5000/dashboard/kanban/${kanbanId}`);
-            const response = await fetch(`http://localhost:5000/dashboard/kanban/`);
-            const data = await response.json();
-            console.log(data);
-            setTasks(data);
-        } catch (error) {
-            console.error('Error fetching tasks:', error);
-        }
-    };
+const fetchTasks = async () => {
+    try {
+        const response = await fetch(`http://localhost:5000/dashboard/kanban/${projectId}`);
+        const data = await response.json();
+
+        // Filter tasks by projectId in all three lists
+        const filteredTodos = data.todos.filter((task) => task.project_id === projectId);
+        const filteredDoings = data.doings.filter((task) => task.project_id === projectId);
+        const filteredDones = data.dones.filter((task) => task.project_id === projectId);
+
+        const updatedTasks = {
+            todos: filteredTodos,
+            doings: filteredDoings,
+            dones: filteredDones,
+        };
+        console.log(updatedTasks);
+        setTasks(updatedTasks);
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        setTasks({ todos: [], doings: [], dones: [] });
+    }
+};
+
 
     const addTask = async (newTask) => {
         console.log(newTask);
@@ -32,7 +45,7 @@ const MainKanban = ({kanbanId, organisations}) => {
                 ...newTask,
                 status: "todo", 
             };
-            const response = await fetch('http://localhost:5000/dashboard/kanban/todo', {
+            const response = await fetch(`http://localhost:5000/dashboard/kanban/todo/${projectId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(taskWithStatus),
@@ -40,7 +53,7 @@ const MainKanban = ({kanbanId, organisations}) => {
             const createdTask = await response.json();
             setTasks((prevTasks) => ({
                 ...prevTasks,
-                todos: [...prevTasks.todos, createdTask],
+                todos: prevTasks.todos ? [...prevTasks.todos, createdTask] : [createdTask],
             }));
         } catch (error) {
             console.error('Error adding task:', error);
@@ -95,9 +108,7 @@ const MainKanban = ({kanbanId, organisations}) => {
                     const updatedNextList = [...prevTasks[nextList], updatedTaskData];
                     
                     return {
-                        todos: [...prevTasks.todos],
-                        doings: [...prevTasks.doings],
-                        dones: [...prevTasks.dones],
+                        ...prevTasks,
                         [currentList]: updatedCurrentList,
                         [nextList]: updatedNextList,
                     };
@@ -135,7 +146,7 @@ const MainKanban = ({kanbanId, organisations}) => {
         <KanbanArea>
             <Grid container spacing={2}>
                 <Grid item xs={4}>
-                    <Todo tasks={tasks.todos}  moveTaskToNextList={moveTaskToNextList} addTask={addTask} organisations={organisations}/>
+                    <Todo tasks={tasks.todos}  moveTaskToNextList={moveTaskToNextList} addTask={addTask} organisations={organisations} selectedproj={selectedproj} userId={userId}/>
                 </Grid>
                 <Grid item xs={4}>
                     <Doing tasks={tasks.doings} moveTaskToNextList={moveTaskToNextList} />

@@ -64,6 +64,7 @@ const Dashboard = () => {
         }
 
         const data = await response.json();
+        console.log(data);
         setOrganisations(data.organisations);
       } catch (error) {
         console.error("Error fetching user organizations:", error);
@@ -112,6 +113,8 @@ const Dashboard = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  console.log(proj);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }}>
       <Navbar onToggle={onToggle} selectedorg={selectedorg} />
@@ -150,7 +153,7 @@ const Dashboard = () => {
             transition: "margin-right 0.3s ease",
           }}>
             <TabPanel value={selectedTab} index={0}>
-              <MainKanban organisations={organisations} />
+              <MainKanban organisations={organisations} projectId={proj._id} selectedproj={proj} userId={user._id}/>
             </TabPanel>
             <TabPanel value={selectedTab} index={1}>
               <Analytics />

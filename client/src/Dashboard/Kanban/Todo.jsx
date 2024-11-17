@@ -4,12 +4,13 @@ import TaskCardComponent from './TaskCard';
 import { Typography } from '@mui/material';
 import CreateTask from './CreateTask';
 
-const Todo = ({ tasks, moveTaskToNextList, addTask, organisations }) => {
-
-    const userType="Leader";
-
+const Todo = ({ tasks, moveTaskToNextList, addTask, organisations, selectedproj, userId }) => {
+    const members = selectedproj?.member_id || [];  
+    // console.log(userId);
+    // Check if there is at least one member with the role "Admin"
+    const hasAdminRole = members.some((memberObj) => memberObj.role === "Admin");
+    // console.log(hasAdminRole);
     const handleAddTask = (taskDetails) => {
-        // Prepare the data to send to the backend
         const taskData = {
             title: taskDetails.title,
             description: taskDetails.description,
@@ -17,15 +18,28 @@ const Todo = ({ tasks, moveTaskToNextList, addTask, organisations }) => {
             assignedId: taskDetails.assignedId,
             timer: taskDetails.timer
         };
-        // Add the task using addTask function (to be sent to the backend)
         addTask(taskData);
     };
+    const filteredTasks = tasks.filter(task => task.assigned_id === userId);
+
     return (
         <TaskListArea>
             <Typography variant="h6" textAlign="center" mb={5}>To Do</Typography>
-            {userType==="Leader"?<CreateTask addTask={handleAddTask} organisations={organisations}/>:null}
-            {tasks?.map((task, index) => (
-                <TaskCardComponent key={index} task={task} moveTaskToNextList={moveTaskToNextList} organisations={organisations}/>
+            {/* Render CreateTask only if there is an Admin */}
+            {hasAdminRole && (
+                <CreateTask 
+                    addTask={handleAddTask} 
+                    organisations={organisations} 
+                    selectedproj={selectedproj}
+                />
+            )}
+            {filteredTasks?.map((task, index) => (
+                <TaskCardComponent 
+                    key={index} 
+                    task={task} 
+                    moveTaskToNextList={moveTaskToNextList} 
+                    organisations={organisations} 
+                />
             ))}
         </TaskListArea>
     );
