@@ -149,10 +149,10 @@ const fetchTasks = async () => {
                     <Todo tasks={tasks.todos}  moveTaskToNextList={moveTaskToNextList} addTask={addTask} organisations={organisations} selectedproj={selectedproj} userId={userId}/>
                 </Grid>
                 <Grid item xs={4}>
-                    <Doing tasks={tasks.doings} moveTaskToNextList={moveTaskToNextList} />
+                    <Doing tasks={tasks.doings} moveTaskToNextList={moveTaskToNextList} userId={userId} selectedproj={selectedproj}/>
                 </Grid>
                 <Grid item xs={4}>
-                    <Done tasks={tasks.dones} delTask={delTask} />
+                    <Done tasks={tasks.dones} delTask={delTask} userId={userId} selectedproj={selectedproj}/>
                 </Grid>
             </Grid>
         </KanbanArea>

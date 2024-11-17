@@ -8,8 +8,8 @@ const Todo = ({ tasks, moveTaskToNextList, addTask, organisations, selectedproj,
     const members = selectedproj?.member_id || [];  
     // console.log(userId);
     // Check if there is at least one member with the role "Admin"
-    const hasAdminRole = members.some((memberObj) => memberObj.role === "Admin");
-    // console.log(hasAdminRole);
+    const hasAdminRole = members.find((memberObj) => (memberObj.role === "Admin" && memberObj.member._id === userId));
+    console.log(members);
     const handleAddTask = (taskDetails) => {
         const taskData = {
             title: taskDetails.title,
@@ -20,7 +20,7 @@ const Todo = ({ tasks, moveTaskToNextList, addTask, organisations, selectedproj,
         };
         addTask(taskData);
     };
-    const filteredTasks = tasks.filter(task => task.assigned_id === userId);
+    const filteredTasks = tasks.filter(task => task.assigned_id === userId || hasAdminRole);
 
     return (
         <TaskListArea>
