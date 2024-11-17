@@ -12,7 +12,7 @@ const Done = ({ tasks, delTask, userId, selectedproj }) => {
         <TaskListArea>
             <Typography variant="h6" textAlign="center" mb={5}>Completed</Typography>
             {filteredTasks?.map((task, index) => (
-                <TaskCardComponent key={index} task={task} delTask={delTask} />
+                <TaskCardComponent key={index} task={task} delTask={delTask} hasAdminRole={hasAdminRole?.role}/>
             ))}
         </TaskListArea>
     );

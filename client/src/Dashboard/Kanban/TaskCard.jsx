@@ -20,13 +20,12 @@ const formatTime = (date) => {
 };
 
 
-const TaskCardComponent = ({ task, moveTaskToNextList, delTask, organisations }) => {
+const TaskCardComponent = ({ task, moveTaskToNextList, delTask, hasAdminRole }) => {
     const formattedDeadline = formatTime(task.deadline);
     const formattedCompletedTime = task.completed_at ? formatTime(task.completed_at) : null;
     const wasCompletedOnTime = new Date(task.completed_at) <= new Date(task.deadline);
     const completionStatus = wasCompletedOnTime ? "On Time" : "Late";
     const completionColor = wasCompletedOnTime ? "success" : "error";
-
 
 
     return (
@@ -89,11 +88,8 @@ const TaskCardComponent = ({ task, moveTaskToNextList, delTask, organisations })
                 </Typography>
             )}
             <Box>
-                {task.status === "done" ? (
-                    <DelIcon onClick={() => delTask(task._id)} style={{ cursor: 'pointer' }} />
-                ) : (
-                    <DoneIcon onClick={() => moveTaskToNextList(task._id)} style={{ cursor: 'pointer' }} />
-                )}
+                { task.status==="done" && hasAdminRole==="Admin"? <DelIcon onClick={() => delTask(task._id)} style={{ cursor: 'pointer' }} />:null}
+                  {task.status!== "done" && hasAdminRole===undefined?  <DoneIcon onClick={() => moveTaskToNextList(task._id)} style={{ cursor: 'pointer' }} />:null}
             </Box>
         </TaskCard>
     );
