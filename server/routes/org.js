@@ -93,17 +93,18 @@ router.post("/createorg", async (req, res) => {
 router.post("/joinorg", async (req, res) => {
     const { user, orgCode, projCode } = req.body;
 
+    if (!user || !orgCode || !projCode) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
     try {
-        console.log("Request Body:", req.body);
         const organisation = await Organisation.findOne({ orgID: orgCode });
         if (!organisation) {
-            console.log("Organisation not found");
             return res.status(404).json({ error: "Organisation not found" });
         }
 
         const project = await Project.findOne({ projectID: projCode });
         if (!project) {
-            console.log("Project not found");
             return res.status(404).json({ error: "Project not found" });
         }
 
@@ -111,8 +112,16 @@ router.post("/joinorg", async (req, res) => {
         if (isMember) {
             return res.status(400).json({ error: "User is already a member of this project" });
         }
-        organisation.orgUser_id.push({user: user._id, role: "member"});
 
+        if (!Array.isArray(organisation.orgUser_id)) {
+            organisation.orgUser_id = [];
+        }
+        organisation.orgUser_id.push({ user: user._id, role: "member" });
+        await organisation.save();
+
+        if (!Array.isArray(project.member_id)) {
+            project.member_id = [];
+        }
         project.member_id.push({ member: user._id, role: "member" });
         await project.save();
 
@@ -127,13 +136,14 @@ router.post("/joinorg", async (req, res) => {
         res.status(200).json({
             message: "User added to the project successfully",
             project: project,
-            members: project.member_id 
+            members: project.member_id,
         });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: "Error adding user to project" });
     }
 });
+
 
 
 
