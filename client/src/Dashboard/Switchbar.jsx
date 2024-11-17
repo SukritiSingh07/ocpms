@@ -26,6 +26,7 @@ const Switchbar = (props) => {
   const setSelectedOrg = props.setSelectedOrg;
   const setProjects = props.setProjects;
   const setIsSidebarOpen = props.setIsSidebarOpen;
+  const setProj=props.setProj;
 
   const user = props.user;
   
@@ -45,9 +46,10 @@ const Switchbar = (props) => {
   // Handle selecting an organization and its projects
   const handleSelectOrganization = (org) => {
     setSelectedOrg(org);
-    setProjects(org.projects); // Set the selected organization's projects
-    localStorage.setItem('selectedOrg', JSON.stringify(org)); // Save selectedOrg in localStorage
-    localStorage.setItem('selectedProj', JSON.stringify(org.projects[0])); // Optionally save the first project
+    setProjects(org.projects);
+    localStorage.setItem('selectedOrg', JSON.stringify(org)); 
+    localStorage.setItem('selectedProj', JSON.stringify(org.projects[0])); 
+    setProj([]);
     setIsSidebarOpen(false);
   };
 
@@ -80,12 +82,12 @@ const Switchbar = (props) => {
 
       {/* Join Modal */}
       <Modal open={isJoinModalOpen} onClose={handleJoinClose}>
-        <Join user={props.user} />
+        <Join user={props.user} handleCreateClose={handleCreateClose} />
       </Modal>
 
       {/* Create Modal */}
       <Modal open={isCreateModalOpen} onClose={handleCreateClose}>
-        <Create user={props.user} />
+        <Create user={props.user} handleCreateClose={handleCreateClose} />
       </Modal>
     </Box>
   );

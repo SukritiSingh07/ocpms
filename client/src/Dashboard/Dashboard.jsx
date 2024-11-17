@@ -115,6 +115,9 @@ const Dashboard = () => {
 
   console.log(proj);
 
+  console.log(proj);
+
+  {proj && console.log(proj._id);}
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }}>
       <Navbar onToggle={onToggle} selectedorg={selectedorg} />
@@ -132,6 +135,7 @@ const Dashboard = () => {
               setSelectedOrg={setSelectedOrg}
               setProjects={setProjects}
               setIsSidebarOpen={setIsSidebarOpen}
+              setProj={setProj}
             />
           )}
         </motion.div>

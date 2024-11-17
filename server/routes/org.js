@@ -34,6 +34,10 @@ router.post("/createorg", async (req, res) => {
             projectName,
             description: projectdesc,
             projectID,
+            member_id:[{
+                member: user._id,
+                role: 'Admin'
+            }],
             organisation: null,
         });
         await newProject.save();
@@ -48,16 +52,14 @@ router.post("/createorg", async (req, res) => {
 
         // Step 3: Update the Project Document with created IDs
         newProject.chat_id = chat._id;
-        newProject.kanban_id = kanban._id;
+        // newProject.kanban_id = kanban._id;
         newProject.analytics_id = analytics._id;
         await newProject.save();
 
         // Step 4: Create Organisation and Link Project
         const newOrganisation = new Organisation({
             name: orgName,
-            orgUser_id: [
-                { user: user._id, role: "Admin" }, // Adjusted to match the schema structure
-            ],
+            orgAdmin: user._id,
             orgID,
             projects: [newProject._id]
         });
@@ -72,7 +74,6 @@ router.post("/createorg", async (req, res) => {
         }
         userDoc.organisations.push(newOrganisation._id);
         await userDoc.save();
-
 
         res.status(201).json({
             message: "Organisation and Project created successfully",

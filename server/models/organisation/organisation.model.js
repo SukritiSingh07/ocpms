@@ -5,6 +5,10 @@ const organisationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  orgAdmin: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   orgID: {
     type: String,
     unique: true,

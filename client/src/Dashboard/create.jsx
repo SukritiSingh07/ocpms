@@ -4,7 +4,7 @@
   function Create(props) {
     const [isOrgCreated, setIsOrgCreated] = useState(false);
     const user=props.user;
-    const [form, setForm] = useState({user: user});
+    const [form, setForm] = useState({ user: user, orgName: "", projectName: "", projDesc: ""});
     // console.log(user);
   
     const handleInputChange = (e) => {
@@ -104,7 +104,7 @@
                 margin="normal"
                 label="Description"
                 variant="outlined"
-                name="ProjDesc"
+                name="projDesc"
                 value={form.projDesc}
                 onChange={handleInputChange}
               />
