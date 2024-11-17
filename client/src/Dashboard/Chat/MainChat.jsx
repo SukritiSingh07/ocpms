@@ -13,7 +13,7 @@ const MainChat = ({ projectId, userId, userName }) => {
     
     // Auto-scroll to the latest message whenever `messages` changes
     useEffect(() => {
-        messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        messageEndRef.current?.scrollIntoView();
     }, [messages]); // Runs whenever `messages` changes
     
     // Handle receiving a new message

@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/kanban/:projectId", async (req, res) => {
     const { projectId } = req.params;
     if(!projectId){return res.send([])};
-    console.log("projectid",projectId);
+    // console.log("projectid",projectId);
     try {
         const todos = await Todo.find();
         const doings = await Doing.find();
