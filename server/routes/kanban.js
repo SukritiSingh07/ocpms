@@ -2,10 +2,26 @@ const express = require("express");
 const Todo = require("../models/organisation/project/kanban/todo.model");
 const Doing = require("../models/organisation/project/kanban/doing.model");
 const Done = require("../models/organisation/project/kanban/done.model");
+const Kanban = require("../models/organisation/project/kanban/kanban.model");
 const router = express.Router();
 
-router.get("/kanban", async (req, res) => {
+// router.get("/kanban/:kanbanId", async (req, res) => {
+router.get("/kanban/", async (req, res) => {
+    // const { kanbanId } = req.params;
+    // console.log(kanbanId);
     try {
+        // const kanban = await Kanban.findById(kanbanId)
+        //     .populate('todo')
+        //     .populate('doing')
+        //     .populate('done');
+
+        // if (!kanban) return res.status(404).json({ message: "Kanban board not found" });
+
+        // res.status(200).json({
+        //     todos: kanban.todo,
+        //     doings: kanban.doing,
+        //     dones: kanban.done
+        // });
         const todos = await Todo.find();
         const doings = await Doing.find();
         const dones = await Done.find();

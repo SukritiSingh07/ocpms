@@ -11,18 +11,25 @@ const MainChat = ({ projectId, userId, userName }) => {
 
     useEffect(() => {
         socket.current.emit('joinRoom', { projectId });
-
         fetchMessages();
-
-        socket.current.on('receiveMessage', (message) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
-            messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-        });
 
         return () => {
             socket.current.disconnect();
         };
     }, [projectId]);
+
+      // Auto-scroll to the latest message whenever `messages` changes
+      useEffect(() => {
+        messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]); // Runs whenever `messages` changes
+
+    // Handle receiving a new message
+    useEffect(() => {
+        socket.current.on('receiveMessage', (message) => {
+            console.log('Received message:', message);
+            setMessages((prevMessages) => [...prevMessages, message]);  // Update messages state
+        });
+    }, []); // Runs once when the component mounts
 
     const fetchMessages = async () => {
         try {
@@ -48,13 +55,13 @@ const MainChat = ({ projectId, userId, userName }) => {
             text: newMessage,
         };
 
+        // Update the local state immediately to show the message
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { ...messageData, _id: Date.now().toString(), createdAt: new Date() },
+        ]);
         socket.current.emit('sendMessage', messageData);
-
-            // Update the local state immediately to show the message
-    setMessages((prevMessages) => [
-        ...prevMessages,
-        { ...messageData, _id: Date.now().toString(), createdAt: new Date() },
-    ]);
+        console.log('Sent message:', messageData);
 
         // Optionally save the message to the database via POST request
         try {

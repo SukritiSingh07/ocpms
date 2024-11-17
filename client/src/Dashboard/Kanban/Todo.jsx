@@ -24,7 +24,7 @@ const Todo = ({ tasks, moveTaskToNextList, addTask, organisations }) => {
         <TaskListArea>
             <Typography variant="h6" textAlign="center" mb={5}>To Do</Typography>
             {userType==="Leader"?<CreateTask addTask={handleAddTask} organisations={organisations}/>:null}
-            {tasks.map((task, index) => (
+            {tasks?.map((task, index) => (
                 <TaskCardComponent key={index} task={task} moveTaskToNextList={moveTaskToNextList} organisations={organisations}/>
             ))}
         </TaskListArea>
