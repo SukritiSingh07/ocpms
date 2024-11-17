@@ -16,8 +16,8 @@ const Dashboard = () => {
   const location = useLocation();
   const user = location.state?.user.user;
   const [organisations, setOrganisations] = useState([]);
-  
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
   // Retrieve selected organization from localStorage
   const [selectedorg, setSelectedOrg] = useState(() => {
@@ -27,30 +27,27 @@ const Dashboard = () => {
 
   // Retrieve projects based on the selected organization
   const [projects, setProjects] = useState(() => {
-    if (selectedorg && selectedorg.projects) {
-      return selectedorg.projects; // Set projects if selectedorg is valid
-    }
-    return []; // Return empty array if no organization is selected
+    return selectedorg ? selectedorg.projects : [];
   });
 
   // Retrieve selected project from localStorage
   const [proj, setProj] = useState(() => {
     const savedProj = localStorage.getItem("selectedProj");
-    console.log(savedProj);
     return savedProj ? JSON.parse(savedProj) : null;
   });
 
-  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
+  // Toggle right sidebar visibility
   const toggleRightSidebar = () => {
     setIsRightSidebarOpen(!isRightSidebarOpen);
   };
 
+  // Handle tab changes
   const [selectedTab, setSelectedTab] = useState(0);
   const handleTabChange = (newValue) => {
     setSelectedTab(newValue);
   };
 
-  // Fetch organisations when user changes or initially
+  // Fetch organizations when user changes or initially
   useEffect(() => {
     const fetchOrganisations = async () => {
       try {
@@ -80,19 +77,19 @@ const Dashboard = () => {
 
   // Update projects whenever selectedorg changes
   useEffect(() => {
-    if (selectedorg && selectedorg.projects) {
-      setProjects(selectedorg.projects); // Update projects when selectedorg changes
+    if (selectedorg) {
+      setProjects(selectedorg.projects);
     } else {
-      setProjects([]); // Reset projects if no organisation is selected
+      setProjects([]);
     }
   }, [selectedorg]);
 
-  // When projects are updated, check if proj is valid
+  // Handle valid project in the updated projects
   useEffect(() => {
     if (proj && projects.length > 0) {
       const validProj = projects.find((p) => p._id === proj._id);
       if (!validProj) {
-        setProj(null); // Reset proj if no longer valid in the current projects
+        setProj(null); // Reset proj if no longer valid
       }
     }
   }, [projects, proj]);
@@ -110,16 +107,13 @@ const Dashboard = () => {
     }
   }, [proj]);
 
+  // Toggle sidebar
   const onToggle = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  console.log(selectedorg);
-  console.log(projects);
-  console.log(proj);
-
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }} >
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }}>
       <Navbar onToggle={onToggle} selectedorg={selectedorg} />
       <Box sx={{ display: 'flex', flexGrow: 1, marginTop: '64px', position: 'relative' }}>
         <motion.div
@@ -129,11 +123,18 @@ const Dashboard = () => {
           style={{ position: 'absolute', zIndex: 10 }}
         >
           {isSidebarOpen && (
-            <Switchbar user={user} organisations={organisations} setSelectedOrg={setSelectedOrg} setProjects={setProjects} setIsSidebarOpen={setIsSidebarOpen} />
+            <Switchbar
+              user={user}
+              organisations={organisations}
+              setSelectedOrg={setSelectedOrg}
+              setProjects={setProjects}
+              setIsSidebarOpen={setIsSidebarOpen}
+            />
           )}
         </motion.div>
+
         <Sidebar user={user} projects={projects} setProj={setProj} selectedorg={selectedorg} />
-        
+
         <Box sx={{
           padding: 2,
           position: "relative",
@@ -155,10 +156,11 @@ const Dashboard = () => {
               <Analytics />
             </TabPanel>
             <TabPanel value={selectedTab} index={2}>
-              <MainChat projectId={proj._id} userId={user._id} userName={user.username} />
+              {proj && <MainChat projectId={proj._id} userId={user._id} userName={user.username} />}
             </TabPanel>
           </Box>
         </Box>
+
         {isRightSidebarOpen && <RightSidebar projects={proj} />}
       </Box>
     </Box>

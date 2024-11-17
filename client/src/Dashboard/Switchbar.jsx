@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   List,
@@ -21,32 +21,45 @@ const Switchbar = (props) => {
   const [open, setOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const organisations=props.organisations;
-  const setSelectedOrg=props.setSelectedOrg;
-  const setProjects=props.setProjects;
-  const setIsSidebarOpen=props.setIsSidebarOpen;
+
+  const organisations = props.organisations;
+  const setSelectedOrg = props.setSelectedOrg;
+  const setProjects = props.setProjects;
+  const setIsSidebarOpen = props.setIsSidebarOpen;
 
   const user = props.user;
   
+  // Handle organization toggle
   const handleToggle = (orgId) => {
-    setOpen(open === orgId ? null : orgId); // Toggle the organization view
+    setOpen(open === orgId ? null : orgId);
   };
 
+  // Handle Join modal
   const handleJoinOpen = () => setIsJoinModalOpen(true);
   const handleJoinClose = () => setIsJoinModalOpen(false);
 
+  // Handle Create modal
   const handleCreateOpen = () => setIsCreateModalOpen(true);
   const handleCreateClose = () => setIsCreateModalOpen(false);
 
+  // Handle selecting an organization and its projects
+  const handleSelectOrganization = (org) => {
+    setSelectedOrg(org);
+    setProjects(org.projects); // Set the selected organization's projects
+    localStorage.setItem('selectedOrg', JSON.stringify(org)); // Save selectedOrg in localStorage
+    localStorage.setItem('selectedProj', JSON.stringify(org.projects[0])); // Optionally save the first project
+    setIsSidebarOpen(false);
+  };
+
   return (
-    <Box sx={{ width: 250, background: '#C6E7FF', height: "calc(100vh - 64px)", position: 'fixed', display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+    <Box sx={{ width: 250, background: '#C6E7FF', height: 'calc(100vh - 64px)', position: 'fixed', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
       <List>
         {/* Loop through organisations and display them */}
         {organisations.length > 0 ? (
           organisations.map((org) => (
             <div key={org._id}>
               {/* Organization name */}
-              <ListItemButton onClick={() => {setSelectedOrg(org); setProjects(org.projects); setIsSidebarOpen(false)}}>
+              <ListItemButton onClick={() => handleSelectOrganization(org)}>
                 <ListItemIcon>
                   <BusinessIcon />
                 </ListItemIcon>
@@ -60,9 +73,9 @@ const Switchbar = (props) => {
         )}
       </List>
 
-      <Box style={{ display: "flex", justifyContent: "space-evenly" }}>
-        <Button onClick={handleJoinOpen} style={{ color: "black" }}>Join</Button>
-        <Button onClick={handleCreateOpen} style={{ color: "black" }}>Create</Button>
+      <Box style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+        <Button onClick={handleJoinOpen} style={{ color: 'black' }}>Join</Button>
+        <Button onClick={handleCreateOpen} style={{ color: 'black' }}>Create</Button>
       </Box>
 
       {/* Join Modal */}
