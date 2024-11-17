@@ -69,16 +69,17 @@ io.on('connection', (socket) => {
 
     socket.on('sendMessage', async ({ projectId, senderId, senderName, text }) => {
         try {
+            console.log('Message received on server:', { projectId, senderId, senderName, text });  // Debugging line
             const newMessage = { projectId, senderId, senderName, text };
-            // Save message to DB
+            // Save message to DB and emit
             const message = await Message.create(newMessage);
-
-            // Emit message to all users in the room
+            console.log('Broadcasting message:', message);  // Debugging line
             io.to(projectId).emit('receiveMessage', message);
         } catch (error) {
             console.error('Error sending message:', error);
         }
     });
+    
 
     socket.on('disconnect', () => {
         console.log('User disconnected');

@@ -5,6 +5,9 @@ const Project = require("../models/organisation/project.model.js");
 const Chat = require('../models/organisation/project/chat/chat.model');
 const Kanban = require('../models/organisation/project/kanban/kanban.model');
 const Analytics = require('../models/organisation/project/analytics/analytics.model');
+const Todo = require('../models/organisation/project/kanban/todo.model.js');
+const Doing = require('../models/organisation/project/kanban/doing.model.js');
+const Done = require('../models/organisation/project/kanban/done.model.js');
 const User = require('../models/user.js');
 function generateUniqueId(baseName) {
     const randomSuffix = Array.from({ length: 5 }, () =>
@@ -39,8 +42,8 @@ router.post("/createorg", async (req, res) => {
         // Step 2: Use the Project ID to create Chat, Kanban, Analytics
         const chat = await Chat.create({ projectId: newProject._id, messages: [] });
         const todoList = await Todo.create([]);
-        const doingList = await Todo.create([]);
-        const doneList = await Todo.create([]);
+        const doingList = await Doing.create([]);
+        const doneList = await Done.create([]);
 
         // Step 3: Create Kanban with references to Todo, Doing, Done
         const kanban = await Kanban.create({

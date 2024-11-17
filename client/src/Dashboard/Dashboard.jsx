@@ -36,6 +36,7 @@ const Dashboard = () => {
   // Retrieve selected project from localStorage
   const [proj, setProj] = useState(() => {
     const savedProj = localStorage.getItem("selectedProj");
+    console.log(savedProj);
     return savedProj ? JSON.parse(savedProj) : null;
   });
 
@@ -154,7 +155,7 @@ const Dashboard = () => {
               <Analytics />
             </TabPanel>
             <TabPanel value={selectedTab} index={2}>
-              <MainChat projectId={user._id} userId={user._id} userName={user.username} />
+              <MainChat projectId={proj._id} userId={user._id} userName={user.username} />
             </TabPanel>
           </Box>
         </Box>
