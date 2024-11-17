@@ -113,6 +113,10 @@ const Dashboard = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  console.log(selectedorg);
+  console.log(projects);
+  console.log(proj);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }} >
       <Navbar onToggle={onToggle} selectedorg={selectedorg} />
