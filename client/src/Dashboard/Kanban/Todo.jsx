@@ -9,7 +9,7 @@ const Todo = ({ tasks, moveTaskToNextList, addTask, organisations, selectedproj,
     // console.log(userId);
     // Check if there is at least one member with the role "Admin"
     const hasAdminRole = members.find((memberObj) => (memberObj.role === "Admin" && memberObj.member._id === userId));
-    console.log(hasAdminRole);
+    // console.log(hasAdminRole);
     const handleAddTask = (taskDetails) => {
         const taskData = {
             title: taskDetails.title,
@@ -40,6 +40,7 @@ const Todo = ({ tasks, moveTaskToNextList, addTask, organisations, selectedproj,
                     moveTaskToNextList={moveTaskToNextList} 
                     organisations={organisations} 
                     hasAdminRole={hasAdminRole?.role}
+                    userId={userId}
                 />
             ))}
         </TaskListArea>

@@ -64,7 +64,7 @@ const Navbar = (props) => {
         });
     }
   };
-  console.log(user);
+  // console.log(user);
   return (
     <AppBar position="fixed">
       <StyledToolbar>

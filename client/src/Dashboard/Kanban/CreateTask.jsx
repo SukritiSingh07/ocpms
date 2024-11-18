@@ -15,7 +15,7 @@ const CreateTask = ({ addTask, organisations, selectedproj }) => {
         timer: ''
     });
     const members = selectedproj?.member_id || [];  
-    console.log(members);
+    // console.log(members);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -76,9 +76,7 @@ const CreateTask = ({ addTask, organisations, selectedproj }) => {
                         onChange={handleSelectChange}
                         name="assignedTo"
                     >
-                       {members
-                            .filter((member) => member.role !== 'Admin')
-                            .map((member) => (
+                       {members.map((member) => (
                                 <MenuItem key={member.member._id} value={member.member._id}>
                                     {member.member.username}
                                 </MenuItem>

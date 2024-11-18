@@ -13,7 +13,14 @@ const MainKanban = ({projectId, organisations, selectedproj, userId}) => {
     useEffect(() => {
         fetchTasks();
     }, []);
-
+    useEffect(() => {
+        if (tasks.todos.projectId !== projectId) {
+            fetchTasks();
+        }
+    }, [projectId]); 
+    
+    console.log(projectId);
+    console.log(selectedproj._id);
 const fetchTasks = async () => {
     try {
         const response = await fetch(`http://localhost:5000/dashboard/kanban/${projectId}`);
@@ -24,12 +31,14 @@ const fetchTasks = async () => {
         const filteredDoings = data.doings.filter((task) => task.project_id === projectId);
         const filteredDones = data.dones.filter((task) => task.project_id === projectId);
 
+        console.log(filteredTodos);
+
         const updatedTasks = {
             todos: filteredTodos,
             doings: filteredDoings,
             dones: filteredDones,
         };
-        console.log(updatedTasks);
+        // console.log(updatedTasks);
         setTasks(updatedTasks);
     } catch (error) {
         console.error('Error fetching tasks:', error);

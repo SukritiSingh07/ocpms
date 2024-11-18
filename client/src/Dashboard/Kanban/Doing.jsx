@@ -18,6 +18,7 @@ const Doing = ({ tasks, moveTaskToNextList, startTimer, userId, selectedproj }) 
                     moveTaskToNextList={moveTaskToNextList} 
                     startTimer={startTimer}
                     hasAdminRole={hasAdminRole?.role}
+                    userId={userId}
                 />
             ))}
         </TaskListArea>

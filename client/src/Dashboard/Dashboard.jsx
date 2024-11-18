@@ -63,7 +63,7 @@ const Dashboard = () => {
         }
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setOrganisations(data.organisations);
       } catch (error) {
         console.error("Error fetching user organizations:", error);
@@ -104,12 +104,12 @@ const Dashboard = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  console.log(selectedorg);
-  console.log(projects);
+  // console.log(selectedorg);
+  // console.log(projects);
   console.log(proj);
 
 
-  {proj && console.log(proj._id);}
+  {proj && console.log(proj.projectName);}
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }}>
       <Navbar onToggle={onToggle} selectedorg={selectedorg} user={user}/>
