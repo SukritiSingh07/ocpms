@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   List,
@@ -7,13 +7,31 @@ import {
   ListItemIcon,
   Typography,
   IconButton,
+  Modal
 } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddIcon from '@mui/icons-material/Add';  // Import Add Icon
 
-function Sidebar(props) {
-  const { projects, setProj, onAddProject, selectedorg } = props;  // Destructure props, including onAddProject callback
+import AddProj from './forms/addProj';
 
+function Sidebar(props) {
+  const { user, projects, setProj, selectedorg } = props;
+  console.log(user);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const handleCopyToClipboard = (projectID) => {
+    if (projectID) {
+      navigator.clipboard.writeText(projectID)
+        .then(() => {
+          alert("Project Code copied to clipboard!");
+        })
+        .catch((error) => {
+          console.error("Failed to copy: ", error);
+        });
+    }
+  };
+  { selectedorg && console.log(selectedorg.name); }
+  const handleAddOpen = () => setIsAddModalOpen(true);
+  const handleAddClose = () => setIsAddModalOpen(false);
   return (
     <Box
       sx={{
@@ -32,7 +50,23 @@ function Sidebar(props) {
           projects.map((proj) => (
             <div key={proj._id}>
               <ListItemButton sx={{ pl: 4 }} onClick={() => setProj(proj)}>
-                <ListItemText primary={proj.projectName} />
+                <ListItemText
+                  primary={proj.projectName} // Project Name
+                  secondary={(
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontSize: '0.875rem',  // Smaller font size for the project code
+                        color: '#B7B7B7',  // Use gray color for secondary text
+                        marginTop: 1,  // Add space between the project name and the project code
+                      }}
+                      onClick={() => handleCopyToClipboard(proj.projectID)}
+
+                    >
+                      {proj.projectID}  {/* Assuming project code is stored in proj.projectCode */}
+                    </Typography>
+                  )}
+                />
                 <ListItemIcon>
                   <ArrowForwardIosIcon />
                 </ListItemIcon>
@@ -47,22 +81,34 @@ function Sidebar(props) {
       </List>
 
       {/* Add Project Button at the bottom corner of the sidebar */}
-      <Box sx={{ marginTop: 'auto', padding: '16px', display: 'flex', justifyContent: 'center' }}>
-        <IconButton
-          sx={{
-            backgroundColor: "#024CAA",
-            color: "white",
-            borderRadius: "50%",
-            padding: "8px",
-            '&:hover': {
-              backgroundColor: "#7AB2D3",
-            }
-          }}
-          onClick={onAddProject}
-        >
-          <AddIcon />
-        </IconButton>
-      </Box>
+      {selectedorg && user._id === selectedorg.orgAdmin && (
+        <Box sx={{ marginTop: 'auto', padding: '16px', display: 'flex', justifyContent: 'center' }}>
+          <IconButton
+            sx={{
+              backgroundColor: "#024CAA",
+              color: "white",
+              borderRadius: "50%",
+              padding: "8px",
+              '&:hover': {
+                backgroundColor: "#7AB2D3",
+              }
+            }}
+            onClick={handleAddOpen}
+          >
+            <AddIcon />
+          </IconButton>
+          <Modal open={isAddModalOpen} onClose={handleAddClose}>
+            <AddProj
+              userID={user._id}
+              handleAddClose={handleAddClose}
+              orgID={selectedorg._id}
+              orgName={selectedorg.name}
+            />
+
+          </Modal>
+        </Box>
+      )}
+
     </Box>
   );
 }

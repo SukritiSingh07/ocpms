@@ -14,8 +14,8 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import BusinessIcon from '@mui/icons-material/Business';
 
-import Join from './join';
-import Create from './create';
+import Join from './forms/join';
+import Create from './forms/create';
 
 const Switchbar = (props) => {
   const [open, setOpen] = useState(false);
@@ -47,8 +47,6 @@ const Switchbar = (props) => {
   const handleSelectOrganization = (org) => {
     setSelectedOrg(org);
     setProjects(org.projects);
-    localStorage.setItem('selectedOrg', JSON.stringify(org)); 
-    localStorage.setItem('selectedProj', JSON.stringify(org.projects[0])); 
     setProj([]);
     setIsSidebarOpen(false);
   };

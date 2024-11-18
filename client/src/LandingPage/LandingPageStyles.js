@@ -238,6 +238,10 @@ export const IconBut=styled(IconButton)(({theme})=>(
         backgroundColor: 'white',
         borderRadius: '50%',
         padding: '4px',
+        '&:hover': {
+            backgroundColor: '#FEA1A1',
+            color: "black"
+        },
     }
 ))
 export const LoginButton = styled(Button)(({ theme }) => (

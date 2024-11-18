@@ -11,6 +11,7 @@ import { useLocation } from 'react-router-dom';
 import Analytics from "./Analytics/Analytics";
 import Sidebar from "./Sidebar";
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const location = useLocation();
@@ -19,21 +20,17 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
 
-  // Retrieve selected organization from localStorage
+  // Set the first organization and its first project by default if available
   const [selectedorg, setSelectedOrg] = useState(() => {
-    const savedOrg = localStorage.getItem("selectedOrg");
-    return savedOrg ? JSON.parse(savedOrg) : null;
+    return organisations.length > 0 ? organisations[0] : null;
   });
 
-  // Retrieve projects based on the selected organization
   const [projects, setProjects] = useState(() => {
     return selectedorg ? selectedorg.projects : [];
   });
 
-  // Retrieve selected project from localStorage
   const [proj, setProj] = useState(() => {
-    const savedProj = localStorage.getItem("selectedProj");
-    return savedProj ? JSON.parse(savedProj) : null;
+    return projects.length > 0 ? projects[0] : null;
   });
 
   // Toggle right sidebar visibility
@@ -80,8 +77,13 @@ const Dashboard = () => {
   useEffect(() => {
     if (selectedorg) {
       setProjects(selectedorg.projects);
+      // Set the first project if available
+      if (selectedorg.projects.length > 0) {
+        setProj(selectedorg.projects[0]);
+      }
     } else {
       setProjects([]);
+      setProj(null);
     }
   }, [selectedorg]);
 
@@ -95,32 +97,20 @@ const Dashboard = () => {
     }
   }, [projects, proj]);
 
-  // Save selectedorg and proj to localStorage whenever they change
-  useEffect(() => {
-    if (selectedorg) {
-      localStorage.setItem("selectedOrg", JSON.stringify(selectedorg));
-    }
-  }, [selectedorg]);
-
-  useEffect(() => {
-    if (proj) {
-      localStorage.setItem("selectedProj", JSON.stringify(proj));
-    }
-  }, [proj]);
-
   // Toggle sidebar
   const onToggle = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  console.log(selectedorg);
+  console.log(projects);
   console.log(proj);
 
-  console.log(proj);
 
   {proj && console.log(proj._id);}
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }}>
-      <Navbar onToggle={onToggle} selectedorg={selectedorg} />
+      <Navbar onToggle={onToggle} selectedorg={selectedorg} user={user}/>
       <Box sx={{ display: 'flex', flexGrow: 1, marginTop: '64px', position: 'relative' }}>
         <motion.div
           initial={{ x: isSidebarOpen ? 0 : -250 }}
@@ -157,7 +147,7 @@ const Dashboard = () => {
             transition: "margin-right 0.3s ease",
           }}>
             <TabPanel value={selectedTab} index={0}>
-              {proj &&<MainKanban organisations={organisations} projectId={proj._id} selectedproj={proj} userId={user._id}/>}
+              {proj &&<MainKanban organisations={organisations} projectId={proj._id} selectedproj={proj} userId={user._id}/> }
             </TabPanel>
             <TabPanel value={selectedTab} index={1}>
               <Analytics />
@@ -175,3 +165,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+  

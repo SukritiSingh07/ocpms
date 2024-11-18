@@ -140,7 +140,63 @@ router.post("/joinorg", async (req, res) => {
     }
 });
 
-
-
+router.post("/AddProj", async (req, res) => {
+    const { projectName, projectDesc, userID, orgID, orgName } = req.body;
+  
+    if (!projectName || !projectDesc || !orgName || !orgID || !userID) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+  
+    try {
+      // Validate user
+      // Generate a unique project ID
+      let projectID = generateUniqueId(orgName);
+      let existingProject = await Project.findOne({ projectID });
+  
+      // Limit attempts to avoid infinite loop
+      let attempts = 0;
+      const maxAttempts = 10;
+  
+      while (existingProject && attempts < maxAttempts) {
+        projectID = generateUniqueId(orgName);
+        existingProject = await Project.findOne({ projectID });
+        attempts++;
+      }
+  
+      if (attempts === maxAttempts) {
+        return res.status(500).json({ error: "Failed to generate a unique project ID" });
+      }
+  
+      // Find the organisation
+      const organisation = await Organisation.findOne({_id: orgID });
+      if (!organisation) {
+        return res.status(404).json({ error: "Organisation not found" });
+      }
+  
+      // Create and save the project
+      const project = new Project({
+        projectName,
+        projectDesc,
+        projectID,
+        organisation: organisation._id,
+        member_id: [{ member: userID, role: "admin" }],
+      });
+  
+      await project.save();
+  
+      // Link project to organisation
+      organisation.projects.push(project._id);
+      await organisation.save();
+  
+      res.status(200).json({
+        message: "Project created successfully",
+        project,
+      });
+    } catch (error) {
+      console.error("Error in AddProj:", error);
+      res.status(500).json({ error: "Error creating project" });
+    }
+  });
+  
 
 module.exports = router;
