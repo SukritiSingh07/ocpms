@@ -17,25 +17,6 @@ const CreateTask = ({ addTask, organisations, selectedproj }) => {
     const members = selectedproj?.member_id || [];  
     console.log(members);
 
-    // Extract members from organisations
-    // if (organisations && organisations.length > 0) {
-    //     organisations.forEach((organisation) => {
-    //         if (organisation.projects && organisation.projects.length > 0) {
-    //             organisation.projects.forEach((project) => {
-    //                 if (project.member_id && && project.member_id.length > 0) {
-    //                     project.member_id.forEach((memberObj) => {
-    //                         members.push({
-    //                             username: memberObj.member.username, 
-    //                             role: memberObj.role,    
-    //                             memberId:  memberObj.member._id,             
-    //                         });
-    //                     });
-    //                 }
-    //             });
-    //         }
-    //     });
-    // }
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setTaskDetails({ ...taskDetails, [name]: value });
@@ -95,11 +76,14 @@ const CreateTask = ({ addTask, organisations, selectedproj }) => {
                         onChange={handleSelectChange}
                         name="assignedTo"
                     >
-                        {members.map((member) => (
-                            <MenuItem key={member.member._id} value={member.member._id}>
-                                {member.member.username}
-                            </MenuItem>
-                        ))}
+                       {members
+                            .filter((member) => member.role !== 'Admin')
+                            .map((member) => (
+                                <MenuItem key={member.member._id} value={member.member._id}>
+                                    {member.member.username}
+                                </MenuItem>
+                            ))
+                        }
                     </Select>
                 </FormControl>
             </Box>
