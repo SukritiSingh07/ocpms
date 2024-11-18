@@ -148,26 +148,14 @@ router.post("/AddProj", async (req, res) => {
     }
   
     try {
-      // Validate user
-      // Generate a unique project ID
       let projectID = generateUniqueId(orgName);
       let existingProject = await Project.findOne({ projectID });
-  
-      // Limit attempts to avoid infinite loop
-      let attempts = 0;
-      const maxAttempts = 10;
   
       while (existingProject && attempts < maxAttempts) {
         projectID = generateUniqueId(orgName);
         existingProject = await Project.findOne({ projectID });
-        attempts++;
       }
   
-      if (attempts === maxAttempts) {
-        return res.status(500).json({ error: "Failed to generate a unique project ID" });
-      }
-  
-      // Find the organisation
       const organisation = await Organisation.findOne({_id: orgID });
       if (!organisation) {
         return res.status(404).json({ error: "Organisation not found" });
@@ -179,7 +167,7 @@ router.post("/AddProj", async (req, res) => {
         projectDesc,
         projectID,
         organisation: organisation._id,
-        member_id: [{ member: userID, role: "admin" }],
+        member_id: [{ member: userID, role: "Admin" }],
       });
   
       await project.save();

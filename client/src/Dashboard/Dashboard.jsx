@@ -24,11 +24,13 @@ const Dashboard = () => {
   const [selectedorg, setSelectedOrg] = useState(() => {
     return organisations.length > 0 ? organisations[0] : null;
   });
+  // console.log(selectedorg);
 
   const [projects, setProjects] = useState(() => {
     return selectedorg ? selectedorg.projects : [];
   });
 
+  // console.log(projects);
   const [proj, setProj] = useState(() => {
     return projects.length > 0 ? projects[0] : null;
   });
@@ -130,7 +132,7 @@ const Dashboard = () => {
           )}
         </motion.div>
 
-        <Sidebar user={user} projects={projects} setProj={setProj} selectedorg={selectedorg} />
+        <Sidebar user={user} projects={projects} setProj={setProj} selectedorg={selectedorg} sProj={proj?proj:null} />
 
         <Box sx={{
           padding: 2,

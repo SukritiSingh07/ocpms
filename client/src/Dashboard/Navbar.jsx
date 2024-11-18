@@ -29,20 +29,18 @@ const Navbar = (props) => {
     try {
       const response = await fetch('/logout', {
         method: 'POST',
-        credentials: 'include',  // Send cookies along with the request
+        credentials: 'include',  
       });
   
       if (!response.ok) {
-        const errorData = await response.json();  // Parse the error message from the server
+        const errorData = await response.json();  
         throw new Error(errorData.message || `Logout failed with status: ${response.status}`);
       }
   
-      const data = await response.json();  // Parse the success response from the server
+      const data = await response.json();  
       if (data.success) {
-        // If logout is successful, redirect the user
         navigate('/', { state: { message: "Successfully logged out" } });
       } else {
-        // If response isn't successful, show the server's message
         alert(data.message || "Logout failed.");
       }
   

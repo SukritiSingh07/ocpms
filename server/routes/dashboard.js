@@ -22,6 +22,12 @@ router.get("/:userId", async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
         
+        user.organisations.forEach((org) => {
+            org.projects = org.projects.filter((project) => 
+                project.member_id.some((member) => member.member._id.toString() === id)
+            );
+        });
+        // console.log(user);
 
         res.json(user);
     } catch (error) {

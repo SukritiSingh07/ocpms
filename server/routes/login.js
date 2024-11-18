@@ -73,12 +73,32 @@ router.post('/login',
     }
 );
 
-router.get('/logout', function (req, res){
-    req.session.destroy(function() {
-        res.clearCookie('connect.sid');
-        res.redirect('/');
+router.post('/logout', (req, res, next) => {
+    req.logout((err) => {
+        if (err) {
+            return next(err); // Properly handle the error if logout fails
+        }
+
+        // Destroy the session after logging out
+        req.session.destroy((err) => {
+            if (err) {
+                console.error("Error destroying session:", err);
+                return res.status(500).json({ success: false, message: "Failed to destroy session during logout." });
+            }
+
+            // Clear session cookie
+            res.clearCookie('connect.sid', {
+                path: '/', // Root path
+                httpOnly: true, // For security
+                secure: process.env.NODE_ENV === 'production', // Secure in production
+            });
+
+            // Send success response
+            res.status(200).json({ success: true, message: "Successfully logged out" });
+        });
     });
-  });
-  
+});
+
+
   
 module.exports = router;
