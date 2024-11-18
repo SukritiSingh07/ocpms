@@ -15,7 +15,7 @@ import AddIcon from '@mui/icons-material/Add';  // Import Add Icon
 import AddProj from './forms/addProj';
 
 function Sidebar(props) {
-  const { user, projects, setProj, selectedorg } = props;
+  const { user, projects, setProj, selectedorg, sProj } = props;
   console.log(user);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const handleCopyToClipboard = (projectID) => {
@@ -56,7 +56,7 @@ function Sidebar(props) {
                     <Typography
                       variant="body2"
                       sx={{
-                        fontSize: '0.875rem',  // Smaller font size for the project code
+                        fontSize: '0.775rem',  // Smaller font size for the project code
                         color: '#B7B7B7',  // Use gray color for secondary text
                         marginTop: 1,  // Add space between the project name and the project code
                       }}
