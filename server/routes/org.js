@@ -34,7 +34,7 @@ router.post("/createorg", async (req, res) => {
             projectName,
             description: projectdesc,
             projectID,
-            member_id:[{
+            member_id: [{
                 member: user._id,
                 role: 'Admin'
             }],
@@ -99,6 +99,28 @@ router.post("/joinorg", async (req, res) => {
             return res.status(404).json({ error: "Organisation not found" });
         }
 
+        const fuser = await User.findOne({ _id: user._id });
+        if (!fuser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Check if the user is already part of the organisation
+        const isOrg = fuser.organisations.some(orgId => orgId.toString() === organisation._id.toString());
+
+        if (!isOrg) {
+            // If user is not a member of the organization, add them to the organization's members list
+            if (!Array.isArray(organisation.orgUser_id)) {
+                organisation.orgUser_id = [];
+            }
+            organisation.orgUser_id.push({ user: user._id, role: "member" });
+            await organisation.save();
+
+            // Add the organization to the user's list of organisations
+            fuser.organisations.push(organisation._id);
+            await fuser.save();
+        }
+
+        // Now proceed to add the user to the project if they're not already a member
         const project = await Project.findOne({ projectID: projCode });
         if (!project) {
             return res.status(404).json({ error: "Project not found" });
@@ -109,25 +131,12 @@ router.post("/joinorg", async (req, res) => {
             return res.status(400).json({ error: "User is already a member of this project" });
         }
 
-        if (!Array.isArray(organisation.orgUser_id)) {
-            organisation.orgUser_id = [];
-        }
-        organisation.orgUser_id.push({ user: user._id, role: "member" });
-        await organisation.save();
-
+        // Add user to the project members list
         if (!Array.isArray(project.member_id)) {
             project.member_id = [];
         }
         project.member_id.push({ member: user._id, role: "member" });
         await project.save();
-
-        const foundUser = await User.findOne({ _id: user._id });
-        if (!foundUser) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        foundUser.organisations.push(organisation._id);
-        await foundUser.save();
 
         res.status(200).json({
             message: "User added to the project successfully",
@@ -140,51 +149,52 @@ router.post("/joinorg", async (req, res) => {
     }
 });
 
+
 router.post("/AddProj", async (req, res) => {
     const { projectName, projectDesc, userID, orgID, orgName } = req.body;
-  
+
     if (!projectName || !projectDesc || !orgName || !orgID || !userID) {
-      return res.status(400).json({ error: "Missing required fields" });
+        return res.status(400).json({ error: "Missing required fields" });
     }
-  
+
     try {
-      let projectID = generateUniqueId(orgName);
-      let existingProject = await Project.findOne({ projectID });
-  
-      while (existingProject && attempts < maxAttempts) {
-        projectID = generateUniqueId(orgName);
-        existingProject = await Project.findOne({ projectID });
-      }
-  
-      const organisation = await Organisation.findOne({_id: orgID });
-      if (!organisation) {
-        return res.status(404).json({ error: "Organisation not found" });
-      }
-  
-      // Create and save the project
-      const project = new Project({
-        projectName,
-        projectDesc,
-        projectID,
-        organisation: organisation._id,
-        member_id: [{ member: userID, role: "Admin" }],
-      });
-  
-      await project.save();
-  
-      // Link project to organisation
-      organisation.projects.push(project._id);
-      await organisation.save();
-  
-      res.status(200).json({
-        message: "Project created successfully",
-        project,
-      });
+        let projectID = generateUniqueId(orgName);
+        let existingProject = await Project.findOne({ projectID });
+
+        while (existingProject && attempts < maxAttempts) {
+            projectID = generateUniqueId(orgName);
+            existingProject = await Project.findOne({ projectID });
+        }
+
+        const organisation = await Organisation.findOne({ _id: orgID });
+        if (!organisation) {
+            return res.status(404).json({ error: "Organisation not found" });
+        }
+
+        // Create and save the project
+        const project = new Project({
+            projectName,
+            projectDesc,
+            projectID,
+            organisation: organisation._id,
+            member_id: [{ member: userID, role: "Admin" }],
+        });
+
+        await project.save();
+
+        // Link project to organisation
+        organisation.projects.push(project._id);
+        await organisation.save();
+
+        res.status(200).json({
+            message: "Project created successfully",
+            project,
+        });
     } catch (error) {
-      console.error("Error in AddProj:", error);
-      res.status(500).json({ error: "Error creating project" });
+        console.error("Error in AddProj:", error);
+        res.status(500).json({ error: "Error creating project" });
     }
-  });
-  
+});
+
 
 module.exports = router;

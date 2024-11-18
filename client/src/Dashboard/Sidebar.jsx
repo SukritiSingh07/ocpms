@@ -7,10 +7,11 @@ import {
   ListItemIcon,
   Typography,
   IconButton,
-  Modal
+  Modal,
+  Collapse,
 } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import AddIcon from '@mui/icons-material/Add';  // Import Add Icon
+import AddIcon from '@mui/icons-material/Add';
 
 import AddProj from './forms/addProj';
 
@@ -18,6 +19,8 @@ function Sidebar(props) {
   const { user, projects, setProj, selectedorg, sProj } = props;
   // console.log(user);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [expandedProjectID, setExpandedProjectID] = useState(null); // Track expanded project
+
   const handleCopyToClipboard = (projectID) => {
     if (projectID) {
       navigator.clipboard.writeText(projectID)
@@ -29,9 +32,14 @@ function Sidebar(props) {
         });
     }
   };
-  { selectedorg && console.log(selectedorg.name); }
+
   const handleAddOpen = () => setIsAddModalOpen(true);
   const handleAddClose = () => setIsAddModalOpen(false);
+
+  const toggleProject = (projectID) => {
+    setExpandedProjectID((prev) => (prev === projectID ? null : projectID)); // Toggle project expansion
+  };
+
   return (
     <Box
       sx={{
@@ -41,36 +49,42 @@ function Sidebar(props) {
         position: "fixed",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",  // This ensures content is spaced properly
-        overflowY: "auto", // Add scrolling for long content
+        justifyContent: "space-between",
+        overflowY: "auto",
       }}
     >
       <List>
         {projects && projects.length > 0 ? (
           projects.map((proj) => (
             <div key={proj._id}>
-              <ListItemButton sx={{ pl: 4 }} onClick={() => setProj(proj)}>
-                <ListItemText
-                  primary={proj.projectName} // Project Name
-                  secondary={(
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontSize: '0.775rem',  // Smaller font size for the project code
-                        color: '#B7B7B7',  // Use gray color for secondary text
-                        marginTop: 1,  // Add space between the project name and the project code
-                      }}
-                      onClick={() => handleCopyToClipboard(proj.projectID)}
-
-                    >
-                      {proj.projectID}  {/* Assuming project code is stored in proj.projectCode */}
-                    </Typography>
-                  )}
-                />
+              <ListItemButton
+                sx={{ pl: 4 }}
+                onClick={() => {
+                  toggleProject(proj._id); // Toggle project visibility
+                  setProj(proj); // Pass the selected project
+                }}
+              >
+                <ListItemText primary={proj.projectName} />
                 <ListItemIcon>
                   <ArrowForwardIosIcon />
                 </ListItemIcon>
               </ListItemButton>
+
+              {/* Conditionally show projID */}
+              <Collapse in={expandedProjectID === proj._id}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: '0.775rem',
+                    color: '#B7B7B7',
+                    marginLeft: '4vh', 
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleCopyToClipboard(proj.projectID)}
+                >
+                  {proj.projectID}
+                </Typography>
+              </Collapse>
             </div>
           ))
         ) : (
@@ -104,11 +118,9 @@ function Sidebar(props) {
               orgID={selectedorg._id}
               orgName={selectedorg.name}
             />
-
           </Modal>
         </Box>
       )}
-
     </Box>
   );
 }

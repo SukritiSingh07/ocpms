@@ -99,6 +99,12 @@ router.post('/logout', (req, res, next) => {
     });
 });
 
-
+// router.get('/session/validate', (req, res) => {
+//     if (req.session && req.session.userId) {
+//       return res.status(200).json({ message: "Session is valid" });
+//     }
+//     res.status(401).json({ message: "Invalid session" });
+//   });
+  
   
 module.exports = router;
