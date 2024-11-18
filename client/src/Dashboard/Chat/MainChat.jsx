@@ -66,6 +66,14 @@ const MainChat = ({ projectId, userId, userName }) => {
         setNewMessage('');
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            // Prevent the default action (new line) and send the message
+            e.preventDefault();
+            handleSendMessage();
+        }
+    };
+
     return (
         <ChatContainer>
             <MessageList>
@@ -84,9 +92,12 @@ const MainChat = ({ projectId, userId, userName }) => {
                 <TextField
                     variant="outlined"
                     fullWidth
+                    multiline
                     value={newMessage}
+                    rows={1}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type a message..."
+                    onKeyDown={handleKeyDown} 
                 />
                 <Button variant="contained" color="primary" onClick={handleSendMessage}>
                     Send
