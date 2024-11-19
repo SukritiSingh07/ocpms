@@ -16,7 +16,9 @@ const MainChat = ({ projectId, userId, userName }) => {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/dashboard/chat/${projectId}`);
+                const response = await axios.get(`http://localhost:5000/dashboard/chat/${projectId}`,{
+                    withCredentials: true,
+                });
                 setMessages(response.data);
             } catch (error) {
                 console.error('Error fetching messages:', error);
@@ -25,7 +27,9 @@ const MainChat = ({ projectId, userId, userName }) => {
 
         fetchMessages();
 
-        const eventSource = new EventSource(`http://localhost:5000/dashboard/chat/stream/${projectId}`);
+        const eventSource = new EventSource(`http://localhost:5000/dashboard/chat/stream/${projectId}`,{
+            withCredentials: true,
+        });
         eventSource.onmessage = (event) => {
             const message = JSON.parse(event.data);
             console.log('Received message via SSE:', message);

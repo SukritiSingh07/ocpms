@@ -26,7 +26,8 @@ router.get("/kanban/:projectId", async (req, res) => {
 router.post("/kanban/todo/:projectId", async (req, res) => {
     const {projectId} = req.params;
     const { title, description, assignedTo, assignedId, timer, status = "todo" } = req.body;
-    
+
+    const created= new Date();
     const timerStart = new Date();
     const deadline = new Date(timerStart.getTime() + timer * 60000); 
     
@@ -36,6 +37,7 @@ router.post("/kanban/todo/:projectId", async (req, res) => {
         assignedToName: assignedTo,  // Adding assignedTo to the assignedToName field
         assigned_id: assignedId,     // Set assignedId in assigned_id field
         project_id: projectId,
+        created,
         deadline,
         status,
     });

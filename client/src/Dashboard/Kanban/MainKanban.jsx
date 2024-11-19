@@ -6,9 +6,8 @@ import Doing from './Doing';
 import Done from './Done';
 import { useForceUpdate } from 'framer-motion';
 
-const MainKanban = ({projectId, organisations, selectedproj, userId}) => {
+const MainKanban = ({projectId, organisations, selectedproj, userId, handleTask}) => {
     const [tasks, setTasks] = useState({ todos: [], doings: [], dones: [] });
-    // console.log(kanbanId);
 
     useEffect(() => {
         fetchTasks();
@@ -23,7 +22,9 @@ const MainKanban = ({projectId, organisations, selectedproj, userId}) => {
     console.log(selectedproj._id);
 const fetchTasks = async () => {
     try {
-        const response = await fetch(`http://localhost:5000/dashboard/kanban/${projectId}`);
+        const response = await fetch(`http://localhost:5000/dashboard/kanban/${projectId}`,{
+            credentials: 'include',
+        });
         const data = await response.json();
 
         // Filter tasks by projectId in all three lists
@@ -40,6 +41,7 @@ const fetchTasks = async () => {
         };
         // console.log(updatedTasks);
         setTasks(updatedTasks);
+        handleTask(updatedTasks);
     } catch (error) {
         console.error('Error fetching tasks:', error);
         setTasks({ todos: [], doings: [], dones: [] });
@@ -58,6 +60,7 @@ const fetchTasks = async () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(taskWithStatus),
+                credentials:'include'
             });
             const createdTask = await response.json();
             setTasks((prevTasks) => ({
@@ -108,6 +111,7 @@ const fetchTasks = async () => {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedTask),
+                credentials: 'include'
             });
     
             if (response.ok) {
@@ -137,7 +141,7 @@ const fetchTasks = async () => {
     
     const delTask = async (taskId) => {
         try {
-            await fetch(`http://localhost:5000/dashboard/kanban/done/${taskId}`, { method: 'DELETE' });
+            await fetch(`http://localhost:5000/dashboard/kanban/done/${taskId}`, { method: 'DELETE' , credentials: 'include'});
     
             setTasks(prevTasks => ({
                 ...prevTasks,

@@ -1,7 +1,24 @@
 import React from 'react';
-import { AnalyticsContainer, AnalyticsTitle, AnalyticsGrid, AnalyticsCard } from './AnalyticStyles';
-import { Bar, Line, Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement, } from 'chart.js';
+import {
+    AnalyticsContainer,
+    AnalyticsGrid,
+    AnalyticsCard,
+    AnalyticsHero,
+    TopChartsWrapper,
+    BottomChartWrapper,
+} from './AnalyticStyles';
+import { Bar, Line } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
 
 // Register Chart.js components
 ChartJS.register(
@@ -12,19 +29,30 @@ ChartJS.register(
     LineElement,
     Title,
     Tooltip,
-    Legend,
-    ArcElement
-  );
+    Legend
+);
 
-const AnalyticsTab = () => {
-    // Dummy data for charts
+const AnalyticsTab = ({ project, tasks }) => {
+    const members = project?.member_id || [];
+    const allTasks = [...tasks.todos, ...tasks.doings, ...tasks.dones];
+
+    // Helper functions for data
+    const calculateMonthlyTaskCounts = () => {
+        const monthlyCounts = new Array(12).fill(0);
+        allTasks.forEach((task) => {
+            const month = new Date(task.created).getMonth();
+            monthlyCounts[month]++;
+        });
+        return monthlyCounts;
+    };
+
     const totalTasksData = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [
             {
                 label: 'Tasks Created',
-                data: [50, 60, 70, 80, 90],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                data: calculateMonthlyTaskCounts(),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
             },
@@ -32,48 +60,92 @@ const AnalyticsTab = () => {
     };
 
     const lateSubmissionsData = {
-        labels: ['Task 1', 'Task 2', 'Task 3', 'Task 4', 'Task 5'],
+        labels: tasks?.dones.map((_, index) => `Task ${index + 1}`),
         datasets: [
             {
                 label: 'Late Submission Time (minutes)',
-                data: [15, -10, 5, -20, 30],
-                fill: false,
+                data: tasks?.dones.map((task) => {
+                    const deadline = new Date(task.deadline);
+                    const completedAt = new Date(task.completed_at);
+                    return completedAt.getTime() ? (completedAt - deadline) / (1000 * 60) : 0;
+                }),
                 borderColor: 'rgba(255, 99, 132, 1)',
                 tension: 0.1,
             },
         ],
     };
 
-    const participantsData = {
-        labels: ['Alice', 'Bob', 'Charlie', 'David', 'Eve'],
+    const taskDistribution = {
+        labels: members.map((member) => member.member.username),
         datasets: [
             {
-                data: [3, 2, 1, 2, 1],
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#FF9F40'],
+                label: 'To Do',
+                data: members.map((member) =>
+                    tasks.todos.filter((task) => task.assignedToName === member.member.username).length
+                ),
+                backgroundColor: '#FF6384',
+            },
+            {
+                label: 'Doing',
+                data: members.map((member) =>
+                    tasks.doings.filter((task) => task.assignedToName === member.member.username).length
+                ),
+                backgroundColor: '#36A2EB',
+            },
+            {
+                label: 'Done',
+                data: members.map((member) =>
+                    tasks.dones.filter((task) => task.assignedToName === member.member.username).length
+                ),
+                backgroundColor: '#FFCE56',
             },
         ],
     };
 
     return (
         <AnalyticsContainer>
-            {/* <AnalyticsTitle>Project Analytics</AnalyticsTitle> */}
-            <AnalyticsGrid>
-            <box style={{display:"flex",justifyContent: "space-evenly"}}>
+
+            {/* Top Charts */}
+            <TopChartsWrapper>
                 <AnalyticsCard>
                     <h3>Total Tasks</h3>
-                    <Bar data={totalTasksData} options={{ responsive: true }} />
+                    <Bar
+                        data={totalTasksData}
+                        options={{
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                        }}
+                    />
                 </AnalyticsCard>
                 <AnalyticsCard>
                     <h3>Late Submissions</h3>
-                    <Line data={lateSubmissionsData} options={{ responsive: true }} />
+                    <Line
+                        data={lateSubmissionsData}
+                        options={{
+                            responsive: true,
+                            plugins: { legend: { position: 'top' } },
+                        }}
+                    />
                 </AnalyticsCard>
-            </box>
- 
-                <AnalyticsCard >
-                    <h3>Participants</h3>
-                    <Pie data={participantsData} options={{ responsive: true }} />
+            </TopChartsWrapper>
+
+            {/* Bottom Chart */}
+            <BottomChartWrapper>
+                <AnalyticsCard>
+                    <h3>Task Distribution</h3>
+                    <Bar
+                        data={taskDistribution}
+                        options={{
+                            responsive: true,
+                            scales: {
+                                x: { title: { display: true, text: 'Members' } },
+                                y: { beginAtZero: true, title: { display: true, text: 'Task Count' } },
+                            },
+                            plugins: { legend: { position: 'top' } },
+                        }}
+                    />
                 </AnalyticsCard>
-            </AnalyticsGrid>
+            </BottomChartWrapper>
         </AnalyticsContainer>
     );
 };

@@ -27,7 +27,7 @@ const Navbar = (props) => {
   const handleSignOut = async () => {
     
     try {
-      const response = await fetch('/logout', {
+      const response = await fetch('http://localhost:5000/logout', {
         method: 'POST',
         credentials: 'include',  
       });

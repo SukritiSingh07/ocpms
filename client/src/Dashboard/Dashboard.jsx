@@ -15,22 +15,28 @@ import { useNavigate } from 'react-router-dom';
 // import { Button } from "react-bootstrap/lib/InputGroup";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [Tasks, setTasks]=useState({ todos: [], doings: [], dones: [] });
+  const handleTask=(tasks)=>{
+    setTasks(tasks);
+  }
+  
   const location = useLocation();
   const user = location.state?.user.user;
   const [organisations, setOrganisations] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
-
+  
   // Set the first organization and its first project by default if available
   const [selectedorg, setSelectedOrg] = useState(() => {
     return organisations.length > 0 ? organisations[0] : null;
   });
   // console.log(selectedorg);
-
+  
   const [projects, setProjects] = useState(() => {
     return selectedorg ? selectedorg.projects : [];
   });
-
+  
   // console.log(projects);
   const [proj, setProj] = useState(() => {
     return projects.length > 0 ? projects[0] : null;
@@ -40,14 +46,13 @@ const Dashboard = () => {
   const toggleRightSidebar = () => {
     setIsRightSidebarOpen(!isRightSidebarOpen);
   };
-
+  
   // Handle tab changes
   const [selectedTab, setSelectedTab] = useState(0);
   const handleTabChange = (newValue) => {
     setSelectedTab(newValue);
   };
 
-  // Fetch organizations when user changes or initially
   useEffect(() => {
     const fetchOrganisations = async () => {
       try {
@@ -60,6 +65,7 @@ const Dashboard = () => {
         });
 
         if (!response.ok) {
+          navigate('/',{}); 
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
@@ -107,7 +113,7 @@ const Dashboard = () => {
 
   // console.log(selectedorg);
   // console.log(projects);
-  console.log(proj);
+  // console.log(proj);
 
 
   const renderTabPanelContent = (tabIndex) => {

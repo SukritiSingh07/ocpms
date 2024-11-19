@@ -1,39 +1,73 @@
-import { Box, styled } from '@mui/material';
+import { Box, styled, Typography } from '@mui/material';
 
+// Full-page container with grid layout
 export const AnalyticsContainer = styled(Box)(({ theme }) => ({
-    padding: '20px',
-    // margin: '0 auto',
-    // maxWidth: '1500px',
-    width: '75svw',
-    backgroundColor: theme.palette.background.default,
+    display: 'flex',
+    flexDirection: 'column', // Ensure content flows vertically
+    justifyContent: 'center', // Center content vertically
+    alignItems: 'center', // Center content horizontally
+    minHeight: '100vh', // Ensure full viewport height
+    width: '100%', // Take full width of the viewport
+    padding: '40px',
+    background: `linear-gradient(135deg, ${theme.palette.primary.light}, ${theme.palette.background.default})`,
+    gap: '20px',
+    boxSizing: 'border-box', // Include padding in the total width/height
+    overflow: 'hidden', // Prevent scrolling
 }));
 
-export const AnalyticsTitle = styled('h2')(({ theme }) => ({
+
+// Hero title styling
+export const AnalyticsHero = styled(Typography)(({ theme }) => ({
+    fontSize: '2.5rem',
+    fontWeight: 700,
+    color: theme.palette.primary.contrastText,
     textAlign: 'center',
-    marginBottom: '30px',
-    color: theme.palette.text.primary,
 }));
 
-export const AnalyticsGrid = styled(Box)(({ theme }) => ({
+// Top charts container
+export const TopChartsWrapper = styled(Box)(({ theme }) => ({
     display: 'grid',
-    // gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '50px',
+    gridTemplateColumns: '1fr 1fr', // Two charts side by side
+    gap: '20px',
+    width: '100%',
+    maxWidth: '1400px',
+    [theme.breakpoints.down('sm')]: {
+        gridTemplateColumns: '1fr', // Stack charts on smaller screens
+    },
 }));
 
+// Individual card styling
 export const AnalyticsCard = styled(Box)(({ theme }) => ({
-    backgroundColor: theme.palette.background.paper,
+    background: `linear-gradient(145deg, ${theme.palette.background.paper}, ${theme.palette.action.hover})`,
+    borderRadius: '15px',
+    boxShadow: theme.shadows[5],
     padding: '20px',
-    borderRadius: '10px',
-    boxShadow: theme.shadows[3],
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: '250px',
-    maxHeight: '500px',
-    '& h3': {
-        fontSize: '1.2rem',
-        marginBottom: '15px',
-        color: theme.palette.text.secondary,
+    textAlign: 'center',
+    width: '100%',
+    height: '100%', // Stretch to fill grid space
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    '&:hover': {
+        transform: 'scale(1.05)',
+        boxShadow: theme.shadows[8],
     },
+    '& h3': {
+        fontSize: '1.4rem',
+        fontWeight: 600,
+        marginBottom: '15px',
+        color: theme.palette.text.primary,
+    },
+}));
+
+// Bottom chart container
+export const BottomChartWrapper = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: '1400px',
+    marginTop: '20px',
 }));

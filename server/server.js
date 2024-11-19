@@ -8,13 +8,12 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
 const http = require('http');
-const org=require('./routes/org');
-const dashboard=require('./routes/dashboard');
+const org = require('./routes/org');
+const dashboard = require('./routes/dashboard');
 
 const app = express();
 const flash = require('connect-flash');
 const port = 5000;
-
 
 app.use(cors({
     origin: "http://localhost:3000",
@@ -23,13 +22,10 @@ app.use(cors({
     optionsSuccessStatus: 204,
 }));
 
-
 const server = http.createServer(app);
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 app.set('trust proxy', 1);
 app.use(session({
@@ -45,7 +41,6 @@ app.use(session({
     }
 }));
 
-
 require("./routes/passport");
 app.use(passport.initialize());
 app.use(passport.session());
@@ -58,15 +53,22 @@ mongoose.connect("mongodb://127.0.0.1:27017/ocmps", { useNewUrlParser: true, use
         console.error('MongoDB connection error:', err);
     });
 
-    app.use(flash());
+app.use(flash());
 
+// Authentication middleware
+function authMiddleware(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.status(401).json({ message: "Unauthorized access. Please log in." });
+}
 
+// Routes
 app.use("/", login);
-app.use("/dashboard", kanban);
-app.use('/dashboard', chat);
-app.use('/dashboard', dashboard);
-app.use('/org', org);
-
+app.use("/dashboard", authMiddleware, kanban);
+app.use("/dashboard", authMiddleware, chat);
+app.use("/dashboard", authMiddleware, dashboard);
+app.use("/org", authMiddleware, org);
 
 server.listen(port, () => {
     console.log("Server is running on port " + port);

@@ -4,6 +4,7 @@ const doneSchema = mongoose.Schema({
     title: String,
     description: String,
     assignedToName: String, 
+    created: Date,
     deadline: Date,
     completed_at: Date,
     status: {
