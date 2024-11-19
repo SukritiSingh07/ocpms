@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { Box , IconButton, Toolbar, Typography} from "@mui/material";
 
 function MiniNav(props) {
@@ -31,6 +34,7 @@ function MiniNav(props) {
         opacity: 1,
       }}
     >
+    <Box sx={{width: '5vw'}}></Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs 
           value={value} 
@@ -44,9 +48,21 @@ function MiniNav(props) {
             }
           }}
         >
-          <Tab label="To-Do" sx={{ flex: 1 }} />
-          <Tab label="Analytics" sx={{ flex: 1 }} />
-          <Tab label="Chat" sx={{ flex: 1 }} />
+          <Tab
+          icon={<AssignmentIcon />}
+          label="Kanban"
+          sx={{ flex: 1 }}
+        />
+          <Tab
+          icon={<BarChartIcon />}
+          label="Analytics"
+          sx={{ flex: 1 }}
+        />
+          <Tab
+          icon={<ChatBubbleOutlineIcon />}
+          label="Chat"
+          sx={{ flex: 1 }}
+        />
         </Tabs>
       </Box>
       <IconButton

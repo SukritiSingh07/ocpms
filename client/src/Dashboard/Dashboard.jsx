@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Switchbar from "./Switchbar";
 import RightSidebar from "./RightSidebar";
-import { Box } from "@mui/material";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
 import MiniNav from "./MiniNav";
 import MainKanban from "./Kanban/MainKanban";
 import MainChat from "./Chat/MainChat";
@@ -12,6 +12,7 @@ import Analytics from "./Analytics/Analytics";
 import Sidebar from "./Sidebar";
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+// import { Button } from "react-bootstrap/lib/InputGroup";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -109,10 +110,55 @@ const Dashboard = () => {
   console.log(proj);
 
 
-  {proj && console.log(proj.projectName);}
+  const renderTabPanelContent = (tabIndex) => {
+    if (!proj) {
+      return (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '81vh',
+            width: '78vw',
+            textAlign: 'center',
+            padding: '2rem',
+            position: 'absolute',
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            No projects available!
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            Start by creating or selecting a project from the sidebar.
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setIsSidebarOpen(true)} // Encourage opening the sidebar
+            sx={{ marginTop: '1rem' }}
+          >
+            Create a Project
+          </Button>
+        </Box>
+      );
+    }
+
+    switch (tabIndex) {
+      case 0:
+        return <MainKanban organisations={organisations} projectId={proj._id} selectedproj={proj} userId={user._id} />;
+      case 1:
+        return <Analytics />;
+      case 2:
+        return <MainChat projectId={proj._id} userId={user._id} userName={user.username} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh", position: "relative", overflowY: "auto", '&::-webkit-scrollbar': { display: 'none', }, '-ms-overflow-style': 'none', 'scrollbar-width': 'none' }}>
-      <Navbar onToggle={onToggle} selectedorg={selectedorg} user={user}/>
+      <Navbar onToggle={onToggle} selectedorg={selectedorg} user={user} />
       <Box sx={{ display: 'flex', flexGrow: 1, marginTop: '64px', position: 'relative' }}>
         <motion.div
           initial={{ x: isSidebarOpen ? 0 : -250 }}
@@ -124,39 +170,42 @@ const Dashboard = () => {
             <Switchbar
               user={user}
               organisations={organisations}
-              setSelectedOrg={setSelectedOrg}
+              setSelectedOrg={(org) => {
+                setSelectedOrg(org);
+                setIsSidebarOpen(false); // Close the sidebar after selection
+              }}
               setProjects={setProjects}
-              setIsSidebarOpen={setIsSidebarOpen}
               setProj={setProj}
+              setIsSidebarOpen={setIsSidebarOpen}
             />
           )}
         </motion.div>
 
-        <Sidebar user={user} projects={projects} setProj={setProj} selectedorg={selectedorg} sProj={proj?proj:null} />
+        <Sidebar user={user} projects={projects} setProj={setProj} selectedorg={selectedorg} sProj={proj ? proj : null} />
 
         <Box sx={{
           padding: 2,
+          pb: 0,
+          pt: 0,
+          // top: "20px",
           position: "relative",
           right: isRightSidebarOpen ? 255 : 0,
           left: 250,
+          // overflowY: "hidden",
         }}>
           <MiniNav toggleRightSidebar={toggleRightSidebar} isRightSidebarOpen={isRightSidebarOpen} onTabChange={handleTabChange} />
           <Box sx={{
             flexGrow: 1,
             padding: 2,
             marginRight: isRightSidebarOpen ? 63 : 30,
-            marginTop: 3,
+            marginTop: 5,
             transition: "margin-right 0.3s ease",
           }}>
-            <TabPanel value={selectedTab} index={0}>
-              {proj &&<MainKanban organisations={organisations} projectId={proj._id} selectedproj={proj} userId={user._id}/> }
-            </TabPanel>
-            <TabPanel value={selectedTab} index={1}>
-              <Analytics />
-            </TabPanel>
-            <TabPanel value={selectedTab} index={2}>
-              {proj && <MainChat projectId={proj._id} userId={user._id} userName={user.username} />}
-            </TabPanel>
+            {[0, 1, 2].map((index) => (
+              <TabPanel key={index} value={selectedTab} index={index}>
+                {renderTabPanelContent(index)}
+              </TabPanel>
+            ))}
           </Box>
         </Box>
 
@@ -167,4 +216,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-  

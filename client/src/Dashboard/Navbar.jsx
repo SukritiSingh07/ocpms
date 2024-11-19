@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppBar, IconButton, Toolbar, Typography, Box, Menu, MenuItem, Card, CardContent, Button } from '@mui/material';
+import { AppBar, IconButton, Toolbar, Typography, Box, Menu, MenuItem, Card, CardContent, Button, Tooltip, Avatar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu'; // Import a menu icon
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -49,9 +49,37 @@ const Navbar = (props) => {
       alert('An error occurred while logging out. Please try again later.');
     }
   };
+
+  function stringToColor(string) {
+    let hash = 0;
+    let i;
+
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+
+    return color;
+  }
   
-  
-  
+  function stringAvatar(name) {
+    const nameParts = name ? name.split(" ") : [];
+    const firstNameInitial = nameParts[0] ? nameParts[0][0] : "";  
+    const lastNameInitial = nameParts[1] ? nameParts[1][0] : "";   
+
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+        marginRight: "4px",
+      },
+      children: `${firstNameInitial}${lastNameInitial}`, 
+    };
+  }
 
   const handleCopyToClipboard = () => {
     if (selectedorg?.orgID) {
@@ -80,7 +108,7 @@ const Navbar = (props) => {
   </IconButton>
 
   {/* Left Side: Logo and Organization Name */}
-  <img
+  {/* <img
     src="/assets/dashboardPics/8f1QUYU.png"
     alt="Logo"
     style={{
@@ -88,7 +116,10 @@ const Navbar = (props) => {
       height: 'auto',
       borderRadius: '50%',
     }}
-  />
+  /> */}
+  {selectedorg && (
+  <Avatar {...stringAvatar(selectedorg.name)} />
+)}
   {selectedorg && (
     <Box>
       <Typography
@@ -113,7 +144,12 @@ const Navbar = (props) => {
         }}
         onClick={handleCopyToClipboard}
       >
-        {selectedorg.orgID} 
+        
+        <Tooltip title="click to copy">
+            <Typography variant="h8" sx={{ margin: '1rem', textAlign: 'center' }}>
+              {selectedorg.orgID} 
+            </Typography>
+        </Tooltip>
       </Typography>
     </Box>
   )}
@@ -122,17 +158,12 @@ const Navbar = (props) => {
 
         {/* Right Side: Profile Image */}
         <Box>
-          <img
-            src="/assets/dashboardPics/8f1QUYU.png"
-            alt="Profile"
-            style={{
-              width: '5vh',
-              height: 'auto',
-              borderRadius: '50%',
-              cursor: 'pointer', // Change cursor to pointer on hover
-            }}
-            onClick={handleMenuClick}  // Open menu on click
-          />
+          {user && (
+              <Avatar onClick={handleMenuClick} {...stringAvatar(user.username)} style={{
+              cursor: 'pointer', 
+            }}/>
+          )}
+          
           {/* Menu for Sign Out */}
           <Menu
             anchorEl={anchorEl}

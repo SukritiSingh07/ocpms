@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, List, ListItem, ListItemText, Avatar } from "@mui/material";
+import { Box, List, ListItem, ListItemText, Avatar, Typography } from "@mui/material";
 
 const RightSidebar = ({ projects }) => {
   const members = projects?.member_id || []; 
@@ -43,24 +43,63 @@ const RightSidebar = ({ projects }) => {
         backgroundColor: "#c0c0c0",
         position: "fixed",
         right: 0,
+        display: "flex",
+        flexDirection: "column",
+        overflowY: "auto", // Allow scrolling for long member lists
+        padding: "8px",
       }}
     >
+        <Typography
+        variant="h6"
+        sx={{
+          textAlign: "center",
+          fontWeight: "bold",
+          marginBottom: "8px",
+          mt: 1
+        }}
+      >
+        Project Members
+      </Typography>
       <Box>
         <List>
           {members.length > 0 ? (
             members.map((memberObj, index) => (
-              <ListItem key={index}>
+              <ListItem key={index}
+               sx={{
+                  borderBottom: "1px solid #ddd",
+                  paddingY: "8px",
+                  display: "flex",
+                  alignItems: "center",
+                }}>
                 <Avatar {...stringAvatar(memberObj.member.username)} />
                 <ListItemText
                   primary={memberObj.member.username} // Member name
                   secondary={memberObj.role}        // Member role
+                  primaryTypographyProps={{ fontWeight: "bold", color: "#333" }}
+                  secondaryTypographyProps={{ color: "#777" }}
+                  sx={{ml:2}}
                 />
               </ListItem>
             ))
           ) : (
-            <ListItem>
-              <ListItemText primary="No members in this project" />
-            </ListItem>
+            <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 'calc(100vh - 150px)',
+        textAlign: 'center',
+        padding: '1rem',
+      }}
+    >
+      <Typography variant="h6" gutterBottom>
+        No members in this project!
+      </Typography>
+      <Typography variant="body2" gutterBottom>
+        Invite your team members to collaborate.
+      </Typography>
+    </Box>
           )}
         </List>
       </Box>

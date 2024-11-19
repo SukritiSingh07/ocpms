@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material';
-import { ChatContainer, MessageInputArea, MessageList, MessageItem, MessageBubble } from './ChatStyles';
+import { ChatContainer, MessageInputArea, MessageList, MessageItem, MessageBubble, SendButton } from './ChatStyles';
 import axios from 'axios';
 
 const MainChat = ({ projectId, userId, userName }) => {
@@ -75,35 +75,96 @@ const MainChat = ({ projectId, userId, userName }) => {
     };
 
     return (
-        <ChatContainer>
-            <MessageList>
-                {messages.map((message) => (
-                    <MessageItem key={message._id}>
-                        <MessageBubble isSender={message.senderId === userId}>
-                            <Typography variant="body1">
-                                <strong>{message.senderName}:</strong> {message.text}
-                            </Typography>
-                        </MessageBubble>
-                    </MessageItem>
-                ))}
-                <div ref={messageEndRef}></div>
-            </MessageList>
-            <MessageInputArea>
-                <TextField
-                    variant="outlined"
-                    fullWidth
-                    multiline
-                    value={newMessage}
-                    rows={1}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type a message..."
-                    onKeyDown={handleKeyDown} 
-                />
-                <Button variant="contained" color="primary" onClick={handleSendMessage}>
-                    Send
-                </Button>
-            </MessageInputArea>
-        </ChatContainer>
+<ChatContainer>
+  <MessageList>
+    {messages.map((message, index) => {
+      const isSender = message.senderId === userId;
+
+      // Check if the next message is from the same sender and time
+      const isLastInGroup =
+        index === messages.length - 1 || // Last message in the list
+        messages[index + 1].senderId !== message.senderId || // Next message has a different sender
+        new Date(messages[index + 1].createdAt).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }) !==
+          new Date(message.createdAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+      return (
+        <MessageItem key={message._id} isSender={isSender}>
+          {/* Show sender name only for the first message in the group */}
+          {/* <Box sx={{display: "grid"}}> */}
+          {index === 0 ||
+          messages[index - 1].senderId !== message.senderId ? (
+            <Typography
+              variant="caption"
+              sx={{
+                marginBottom: "4px",
+                color: "text.secondary",
+                textAlign: "left",
+                paddingLeft: "8px",
+              }}
+            >
+              {!isSender && message.senderName}
+            </Typography>
+          ) : null}
+
+          <MessageBubble isSender={isSender}>
+          <Typography
+                  sx={{
+                    whiteSpace: "pre-wrap", // Preserves line breaks
+                    wordWrap: "break-word", // Prevents overflow for long words
+                    maxWidth: "500px"
+                  }}
+                  variant="body2"
+                >
+                  {message.text}
+                </Typography>
+          </MessageBubble>
+
+          {/* Show timestamp only for the last message in the group */}
+          { isLastInGroup && (
+            <Typography
+            //   variant="h8"
+              sx={{
+                fontSize: '8px',
+                marginTop: "4px",
+                color: "text.secondary",
+                textAlign: isSender ? "right" : "left",
+                ...(isSender ? { marginRight: "4px" } : { marginLeft: "4px" }),
+              }}
+            >
+              {new Date(message.createdAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </Typography>
+          )}
+        </MessageItem>
+      );
+    })}
+    <div ref={messageEndRef}></div>
+  </MessageList>
+  <MessageInputArea>
+    <TextField
+      variant="outlined"
+      fullWidth
+      multiline
+      rows={1}
+      value={newMessage}
+      onChange={(e) => setNewMessage(e.target.value)}
+      placeholder="Type a message..."
+      onKeyDown={handleKeyDown}
+    />
+    <SendButton variant="contained" color="primary" onClick={handleSendMessage}>
+      Send
+    </SendButton>
+  </MessageInputArea>
+</ChatContainer>
+
     );
 };
 

@@ -8,7 +8,7 @@ const divstyle = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    border: '2px solid black',
+    // border: '2px solid black',
     width: "50%"
 };
 
@@ -93,13 +93,13 @@ function Login() {
     return (
         <LoginBox>
             <img
-                src="https://img.freepik.com/free-vector/charts-set-blue-dashboard-user-panel_23-2148381984.jpg"
+                src="https://img.freepik.com/free-vector/secure-login-concept-illustration_114360-458.jpg"
                 alt="Dashboard"
-                style={{ width: "50%" }}
+                style={{ width: "50%" , padding: "10px", margin: "10px"}}
             />
             <div style={divstyle}>
-                <h2 style={{ fontFamily: "Open Sans" }}>{signup ? "Sign Up to" : "Sign In as"}</h2>
-                <img src="" alt="logo" />
+                <strong style={{ fontFamily: "Open Sans" }}>{signup ? "Sign Up " : "Sign In "}</strong>
+                {/* <img src="" alt="logo" /> */}
                 <form style={formstyle} onSubmit={handleSubmit}>
                     <TextPlace
                         id="outlined-basic"
@@ -109,6 +109,7 @@ function Login() {
                         margin="normal"
                         name="username"
                         onChange={handleForm}
+                        sx={{width: "20rem"}}
                     />
                     {signup && (
                         <TextPlace
@@ -119,7 +120,7 @@ function Login() {
                             margin="normal"
                             name="Email"
                             onChange={handleForm}
-
+                            sx={{width: "20rem"}}
                         />
                     )}
                     <TextPlace
@@ -131,7 +132,7 @@ function Login() {
                         margin="normal"
                         name="password"
                         onChange={handleForm}
-                        
+                        sx={{width: "20rem"}}
                     />
                     {signup && (
                         <TextPlace
@@ -145,7 +146,7 @@ function Login() {
                             onChange={checkValidation}
                             error={Boolean(isError)}
                             helperText={isError}
-                            
+                            sx={{width: "20rem"}}
                         />
                     )}
                     <LoginButton

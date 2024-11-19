@@ -1,12 +1,19 @@
-import { Box, styled } from '@mui/material';
+import { Box, Button, styled } from '@mui/material';
 
 export const ChatContainer = styled(Box)(({ theme }) => ({
-    width: '75vw',
+    width: '78vw',
+    // width: '100%',
     maxWidth: '1500px',
-    height: '75vh',
+    // height: '100%',
+    height: '78vh',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: theme.palette.background.default,
+    background: "linear-gradient(135deg, #f0f4f8, #d9e8ff)",
+    margin: "0 auto",
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: theme.shape.borderRadius,
+    overflow: "hidden",
+    boxShadow: theme.shadows[3],
 }));
 
 export const MessageList = styled(Box)(({ theme }) => ({
@@ -15,7 +22,7 @@ export const MessageList = styled(Box)(({ theme }) => ({
     padding: theme.spacing(1),
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(1),
+    // gap: theme.spacing(1),
     '&::-webkit-scrollbar': {
         display: 'none',  
     },
@@ -23,39 +30,34 @@ export const MessageList = styled(Box)(({ theme }) => ({
     'scrollbar-width': 'none',     
 }));
 
-export const MessageItem = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    padding: theme.spacing(1),
-}));
+export const MessageItem = styled(Box)(({ isSender, theme }) => ({
+    display: "grid",
+    justifyContent: isSender ? "flex-end" : "flex-start",
+    marginBottom: "12px",
+    textAlign:"center"
+  }));
 
 export const MessageBubble = styled(Box)(({ isSender, theme }) => ({
-    alignSelf: isSender ? 'flex-end' : 'flex-start',
-    padding: theme.spacing(1),
-    borderRadius: '10px',
-    backgroundColor: isSender ? theme.palette.primary.main : theme.palette.grey[300],
-    color: isSender ? '#fff' : theme.palette.text.primary,
-    maxWidth: '60%',
+    padding: "10px 16px",
+    borderRadius: "12px",
+    backgroundColor: isSender
+      ? theme.palette.primary.main
+      : theme.palette.grey[300],
+    color: isSender ? theme.palette.primary.contrastText : theme.palette.text.primary,
+    maxWidth: "100%",
+    // display: "flex",
+    textAlign: "center",
+    margin: 0,
 }));
 
 export const MessageInputArea = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(1),
-    borderTop: `1px solid ${theme.palette.divider}`,
-    position: 'sticky',
-    bottom: 0,
-    backgroundColor: theme.palette.background.default,
+    display: "flex",
+    padding: "12px",
+    borderTop: "1px solid #ddd",
+    backgroundColor: "#C5D3E8",
 }));
 
-export const SendButton = styled(Box)(({ theme }) => ({
-    marginLeft: theme.spacing(1),
-    backgroundColor: theme.palette.primary.main,
-    color: '#fff',
-    padding: theme.spacing(1, 2),
-    borderRadius: '5px',
-    cursor: 'pointer',
-    '&:hover': {
-        backgroundColor: theme.palette.primary.dark,
-    },
+export const SendButton = styled(Button)(({ theme }) => ({
+    marginLeft: "12px",
+    height: "100%",
 }));

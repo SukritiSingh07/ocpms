@@ -9,6 +9,7 @@ import {
   Button,
   Modal,
   Typography,
+  Tooltip,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -53,13 +54,23 @@ const Switchbar = (props) => {
 
   return (
     <Box sx={{ width: 250, background: '#C6E7FF', height: 'calc(100vh - 64px)', position: 'fixed', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+    <Box>
+          <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', marginBottom: 1,marginTop: 1 }}>
+        Organizations
+      </Typography>
       <List>
         {/* Loop through organisations and display them */}
         {organisations.length > 0 ? (
           organisations.map((org) => (
             <div key={org._id}>
               {/* Organization name */}
-              <ListItemButton onClick={() => handleSelectOrganization(org)}>
+              <ListItemButton onClick={() => handleSelectOrganization(org)}
+                sx={{
+                  backgroundColor: '#EAF4FF',
+                  borderRadius: 2,
+                  '&:hover': { backgroundColor: '#D5E9FF' },
+                  margin: 1
+                }}>
                 <ListItemIcon>
                   <BusinessIcon />
                 </ListItemIcon>
@@ -69,10 +80,14 @@ const Switchbar = (props) => {
             </div>
           ))
         ) : (
-          <Typography variant="body2" color="white">No organizations found</Typography>
+          <Tooltip title="You can manage your organizations here.">
+  <Typography variant="h6" sx={{ margin: '1rem', textAlign: 'center' }}>
+    Looking for your Organization? Start by joining or creating an organization.
+  </Typography>
+</Tooltip>
         )}
       </List>
-
+</Box>
       <Box style={{ display: 'flex', justifyContent: 'space-evenly' }}>
         <Button onClick={handleJoinOpen} style={{ color: 'black' }}>Join</Button>
         <Button onClick={handleCreateOpen} style={{ color: 'black' }}>Create</Button>

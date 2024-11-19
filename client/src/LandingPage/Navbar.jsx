@@ -39,6 +39,8 @@ function Navbar() {
                 <LogBoxMotion
                     initial={{ opacity: 0 ,top:'60%'}}
                     animate={{ opacity: 1 ,top:'50%'}}
+
+                    // sx={{border: "500px"}}
                 >
                     <Login />
                     <IconBut

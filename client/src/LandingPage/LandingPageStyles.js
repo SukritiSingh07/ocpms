@@ -223,7 +223,10 @@ export const LogBox = styled(Box)(({ theme }) =>({
     height: '80vh', 
     boxShadow: 24,
     // padding: '3mm',
-    border: '3mm solid cyan',
+    // border: '10px solid grey',
+    borderRadius: "10px",
+    // padding: "10px",s
+    // paddingTop: "10px",
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

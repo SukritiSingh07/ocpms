@@ -9,9 +9,11 @@ import {
   IconButton,
   Modal,
   Collapse,
+  Tooltip,
 } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddIcon from '@mui/icons-material/Add';
+import FolderIcon from '@mui/icons-material/Folder';
 
 import AddProj from './forms/addProj';
 
@@ -53,24 +55,36 @@ function Sidebar(props) {
         overflowY: "auto",
       }}
     >
+          <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 1,mt:1 }}>
+        Projects
+      </Typography>
       <List>
         {projects && projects.length > 0 ? (
           projects.map((proj) => (
             <div key={proj._id}>
               <ListItemButton
-                sx={{ pl: 4 }}
+                 sx={{
+                  backgroundColor: '#EAF4FF',
+                  borderRadius: 2,
+                  '&:hover': { backgroundColor: '#D5E9FF' },
+                  margin: 1,
+                  display: 'grid',
+                }}
                 onClick={() => {
                   toggleProject(proj._id); // Toggle project visibility
                   setProj(proj); // Pass the selected project
                 }}
               >
-                <ListItemText primary={proj.projectName} />
+              <Box sx={{display: 'flex', alignItems:'center'}}>
                 <ListItemIcon>
-                  <ArrowForwardIosIcon />
+                  <FolderIcon sx={{ color: '#3a6ea5' }} />
                 </ListItemIcon>
-              </ListItemButton>
-
-              {/* Conditionally show projID */}
+                <ListItemText primary={proj.projectName} />
+              </Box>
+                {/* <ListItemIcon>
+                  <ArrowForwardIosIcon />
+                </ListItemIcon> */}
+                 {/* Conditionally show projID */}
               <Collapse in={expandedProjectID === proj._id}>
                 <Typography
                   variant="body2"
@@ -82,20 +96,33 @@ function Sidebar(props) {
                   }}
                   onClick={() => handleCopyToClipboard(proj.projectID)}
                 >
-                  {proj.projectID}
+                  
+                  <Tooltip title="click to copy">
+                  <Typography variant="h8" sx={{ margin: '1rem', textAlign: 'center' }}>
+                    {proj.projectID}
+                  </Typography>
+                </Tooltip>
                 </Typography>
               </Collapse>
+              </ListItemButton>
+
+             
             </div>
           ))
         ) : (
-          <Typography sx={{ color: "white", padding: "16px", textAlign: "center" }}>
-            No projects found
-          </Typography>
+          <>
+          <Tooltip title="You can manage your projects here.">
+  <Typography variant="h6" sx={{ margin: '1rem', textAlign: 'center' }}>
+    Looking for your project? Start by joining or creating an organization.
+  </Typography>
+</Tooltip>
+    <Box sx={{height:'100%'}}>
+    </Box></>
         )}
       </List>
 
       {/* Add Project Button at the bottom corner of the sidebar */}
-      {selectedorg && user._id === selectedorg.orgAdmin && (
+      {selectedorg && user._id === selectedorg.orgAdmin ? (
         <Box sx={{ marginTop: 'auto', padding: '16px', display: 'flex', justifyContent: 'center' }}>
           <IconButton
             sx={{
@@ -120,6 +147,8 @@ function Sidebar(props) {
             />
           </Modal>
         </Box>
+      ):(
+        <Box sx={{height: '100%'}}></Box>
       )}
     </Box>
   );
