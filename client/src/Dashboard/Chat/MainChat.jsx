@@ -59,6 +59,7 @@ const MainChat = ({ projectId, userId, userName }) => {
 
         try {
             await axios.post('http://localhost:5000/dashboard/chat', messageData, {
+              withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',
                 },

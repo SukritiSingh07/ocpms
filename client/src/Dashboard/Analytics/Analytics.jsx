@@ -33,8 +33,10 @@ ChartJS.register(
 );
 
 const AnalyticsTab = ({ project, tasks }) => {
+    // console.log(project);
     const members = project?.member_id || [];
     const allTasks = [...tasks.todos, ...tasks.doings, ...tasks.dones];
+    console.log(tasks);
 
     // Helper functions for data
     const calculateMonthlyTaskCounts = () => {
@@ -60,7 +62,7 @@ const AnalyticsTab = ({ project, tasks }) => {
     };
 
     const lateSubmissionsData = {
-        labels: tasks?.dones.map((_, index) => `Task ${index + 1}`),
+        labels: tasks?.dones.map((_, index) => _.title),
         datasets: [
             {
                 label: 'Late Submission Time (minutes)',
@@ -74,7 +76,7 @@ const AnalyticsTab = ({ project, tasks }) => {
             },
         ],
     };
-
+    console.log(members);
     const taskDistribution = {
         labels: members.map((member) => member.member.username),
         datasets: [
@@ -101,6 +103,7 @@ const AnalyticsTab = ({ project, tasks }) => {
             },
         ],
     };
+    console.log(taskDistribution);
 
     return (
         <AnalyticsContainer>

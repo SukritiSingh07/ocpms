@@ -16,16 +16,17 @@ import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [Tasks, setTasks]=useState({ todos: [], doings: [], dones: [] });
-  const handleTask=(tasks)=>{
-    setTasks(tasks);
-  }
+
   
   const location = useLocation();
   const user = location.state?.user.user;
   const [organisations, setOrganisations] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
+  const [tasks, setTasks]=useState({ todos: [], doings: [], dones: [] });
+  const handleTasks=(task)=>{
+      setTasks(task);
+  }
   
   // Set the first organization and its first project by default if available
   const [selectedorg, setSelectedOrg] = useState(() => {
@@ -152,9 +153,9 @@ const Dashboard = () => {
 
     switch (tabIndex) {
       case 0:
-        return <MainKanban organisations={organisations} projectId={proj._id} selectedproj={proj} userId={user._id} />;
+        return <MainKanban organisations={organisations} projectId={proj._id} selectedproj={proj} userId={user._id} handleTask={handleTasks}/>;
       case 1:
-        return <Analytics />;
+        return <Analytics project={proj} tasks={tasks} />;
       case 2:
         return <MainChat projectId={proj._id} userId={user._id} userName={user.username} />;
       default:
